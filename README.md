@@ -8,6 +8,10 @@ Download the image from [GitHub Releases](https://github.com/Seguar/HamGeek-ZU67
 
 See the [bring-up instructions](bring-up.md) for the mode pins, serial console and Ethernet setup.
 
+## ADC00/J36 overlay
+
+The optional [ADC00 capture overlay](overlay/README.md) captures 32,768 real samples at 2.4576 GS/s from J36. It is available as a separate [overlay prerelease](https://github.com/Seguar/HamGeek-ZU67DR-PYNQ/releases/tag/adc00-v0.1.0-rc1) for the PYNQ 4.0.0 SD image.
+
 ## Validation
 
 The disk image passed offline partition and filesystem checks. The bootloader headers and device tree were inspected, and PYNQ, NumPy and JupyterLab package metadata were checked under AArch64 userspace emulation. First boot and hardware I/O checks on the target card are pending. RFDC sample capture requires a separate application overlay.

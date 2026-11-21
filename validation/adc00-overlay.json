@@ -1,0 +1,38 @@
+{
+  "scope": "Offline tests. First physical clock setup and ADC capture are pending.",
+  "vivado_version": "2025.2",
+  "part": "xczu67dr-fsve1156-2-i",
+  "connector": "J36",
+  "sample_rate_hz": 2457600000,
+  "sample_count": 32768,
+  "timing": {
+    "worst_setup_slack_ns": 0.953,
+    "worst_hold_slack_ns": 0.019,
+    "unconstrained_internal_endpoints": 0
+  },
+  "routing_errors": 0,
+  "drc_errors": 0,
+  "drc_warnings": [
+    "RTSTAT-10"
+  ],
+  "cdc": {
+    "capture_synchronizers": "two CDC-3 single-bit crossings",
+    "rfdc_internal_cdc15_warnings": 43
+  },
+  "rtl_simulation": "Two frames, every 32-bit read word, valid gaps",
+  "pynq_metadata": "PYNQ 4.0.0 AArch64 runtime parsed RFDC, GPIO and 64 KiB buffer",
+  "files": {
+    "adc00.bit": {
+      "bytes": 20860235,
+      "sha256": "1379d9ee0fe169af7df90e2be973c7765c9c8a8704dea2fbfb1eb249ee778328"
+    },
+    "adc00.hwh": {
+      "bytes": 361528,
+      "sha256": "d561de38fb5a11af85eabdc46b355b30224e767af481c4e60b1c45b3695c210a"
+    },
+    "lmk04828.dtbo": {
+      "bytes": 324,
+      "sha256": "ce3a37d20547364d02684d21145fb11d078b7bf5ff050c7b28805c21aa4aee48"
+    }
+  }
+}
