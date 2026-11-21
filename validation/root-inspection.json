@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "scope": "offline image inspection; no fresh board boot claim",
+  "hostname": "pynq-hamgeek-zu67dr",
+  "machine_id": "empty",
+  "ssh_host_keys": "absent; generation required before SSH service and socket",
+  "kernel_modules": [
+    "6.12.40-xilinx-g0900176227cc"
+  ],
+  "unused_empty_module_placeholders": [
+    "6.8.0-31-generic"
+  ],
+  "verified_python_git_commits": {
+    "PYNQ-Metadata": "7ff39f7e699b854973e4f894fb6e5272534a42f7",
+    "PYNQ-Utils": "fe88b2fd04b6789bd2c9d50c47b140e8453a6886"
+  },
+  "zocl_module": "present"
+}

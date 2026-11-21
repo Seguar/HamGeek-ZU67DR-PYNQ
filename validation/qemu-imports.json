@@ -1,0 +1,7 @@
+{
+  "pynq": "4.0.0",
+  "numpy": "1.26.4",
+  "jupyterlab": "4.6.1",
+  "numpy_test_sum": 523776,
+  "tool": "QEMU AArch64 userspace"
+}

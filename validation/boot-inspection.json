@@ -1,0 +1,38 @@
+{
+  "status": "PASS",
+  "model": "HamGeek XCZU67DR PCIe V1",
+  "board": "HamGeekZU67DR",
+  "memory_ranges": {
+    "/memory@0": [
+      [
+        0,
+        2146435072
+      ]
+    ],
+    "/memory@800000000": [
+      [
+        34359738368,
+        2147483648
+      ]
+    ]
+  },
+  "linux_memory_bytes": 4293918720,
+  "physical_ps_ddr_bytes": 4294967296,
+  "stdout_path": "serial0:115200n8",
+  "uart_node": "/axi/serial@ff000000",
+  "bootargs": "root=/dev/mmcblk0p2 rw earlyprintk rootfstype=ext4 rootwait devtmpfs.mount=1 uio_pdrv_genirq.of_id=\"generic-uio\" clk_ignore_unused",
+  "cma": "/reserved-memory/linux,cma",
+  "ps_reference_hz": 33333333,
+  "phy_nodes": {
+    "/axi/ethernet@ff0e0000/mdio/ethernet-phy@3": {
+      "reg": "3",
+      "compatible": null
+    }
+  },
+  "enabled_pl_intc": false,
+  "scope": "offline final DTB inspection; no board boot claim",
+  "sd_root_node": "/axi/mmc@ff170000",
+  "emmc_node": "/axi/mmc@ff160000",
+  "ethernet_mac": "/axi/ethernet@ff0e0000",
+  "ethernet_phy_address": 3
+}

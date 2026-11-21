@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "critical_settings_matched": 135,
+  "critical_setting_prefixes": [
+    "PSU__DDRC__",
+    "PSU_DDR_RAM_",
+    "PSU__SD0__",
+    "PSU__SD1__",
+    "PSU__UART0__",
+    "PSU__ENET3__",
+    "PSU__CRF_APB__DDR"
+  ],
+  "vendor_xsa_sha256": "6c501030b21309122032a4557f5690aab7a984ac6d6ae80bfd9edea7516081f3",
+  "boot_xsa_sha256": "5c6d07b12138e2bed80eeaa41de0764361420f2c1d536731907220e2b4cd0472",
+  "other_parameter_differences": [
+    "Component_Name",
+    "PSU_MIO_12_DIRECTION",
+    "PSU__GPIO_EMIO__PERIPHERAL__ENABLE",
+    "PSU__GPIO_EMIO__PERIPHERAL__IO",
+    "PSU__M_AXI_GP2__FREQMHZ",
+    "PSU__PROTECTION__FPD_SEGMENTS",
+    "PSU__USE__IRQ0",
+    "PSU__USE__M_AXI_GP2"
+  ],
+  "scope": "Static PS hardware handoff comparison."
+}

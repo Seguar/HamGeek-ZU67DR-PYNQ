@@ -1,0 +1,35 @@
+{
+  "build": {
+    "pynq_tag": "v4.0.0",
+    "pynq_commit": "d90670c69f7b71ea1a5d23aaa3e0ec713ff5fa9f",
+    "tools": "2025.2",
+    "edf_manifest": "amd-edf-rel-v25.11.1",
+    "python_git_dependencies": {
+      "PYNQ-Metadata": "7ff39f7e699b854973e4f894fb6e5272534a42f7",
+      "PYNQ-Utils": "fe88b2fd04b6789bd2c9d50c47b140e8453a6886"
+    },
+    "part": "xczu67dr-fsve1156-2-i",
+    "vendor_ps_xsa_sha256": "6c501030b21309122032a4557f5690aab7a984ac6d6ae80bfd9edea7516081f3",
+    "ps_ddr_bytes": 4294967296,
+    "machine": "zynqmp-hamgeek-zu67dr-pynq",
+    "boot_overlay": null
+  },
+  "image": {
+    "name": "HamGeekZU67DR-PYNQ-4.0.0-rc1.img",
+    "bytes": 8266973184,
+    "sha256": "eaf551158e9e9a57c57dfc2cb423772df4e42dac4e13d5f93bb701680c8bb45b"
+  },
+  "compressed_image": {
+    "name": "HamGeekZU67DR-PYNQ-4.0.0-rc1.img.xz",
+    "bytes": 2131217068,
+    "sha256": "6c1e4b6a75e6e3ed1f3460b5320ef20b2a2a8ea5380b06f5a83e366544db5e81"
+  },
+  "validation": {
+    "partition_and_filesystem_checks": "pass",
+    "bootgen_headers": "pass",
+    "linux_device_tree": "pass",
+    "qemu_aarch64_userspace": "pass",
+    "fresh_boot_on_target": "pending",
+    "rfdc_capture_overlay": "separate deliverable"
+  }
+}
