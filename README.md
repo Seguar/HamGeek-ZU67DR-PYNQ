@@ -8,7 +8,7 @@ The HamGeek listing covers the ZU27DR, ZU47DR and ZU67DR family. This repository
 
 ## Download and boot
 
-[RC2](https://github.com/Seguar/HamGeek-ZU67DR-PYNQ/releases/tag/v4.0.0-zu67dr.1-rc2) provides two images. Verify the archive against `SHA256SUMS` and the expanded file against `RAW-SHA256SUMS`. The standard image needs **8,266,973,184 bytes** of media. The 8 GB image needs **7,645,691,904 bytes** and fits the 7,818,182,656-byte eMMC measured on the tested board. Check the media's actual capacity before writing. Use a raw disk writer and select SD1 2.0 boot for microSD. Fresh RC2 hardware boot is pending for both media.
+[RC2](https://github.com/Seguar/HamGeek-ZU67DR-PYNQ/releases/tag/v4.0.0-zu67dr.1-rc2) provides two images. Verify the archive against `SHA256SUMS` and the expanded file against `RAW-SHA256SUMS`. The standard image needs **8,266,973,184 bytes** of media. The 8 GB image needs **7,645,691,904 bytes** and fits the 7,818,182,656-byte eMMC measured on the tested board. Check the media's actual capacity before writing. Use a raw disk writer and select SD1 2.0 boot for microSD. The compact RC2 image was written to eMMC and verified by read-back on the tested card. Fresh RC2 hardware boot is pending for both media.
 
 See the [bring-up instructions](bring-up.md) for the boot switches and serial console, the [board support files](port/README.md) for image preparation, and the [bench report](https://seguar.github.io/hamgeek-zu67dr-bringup/) for the measured results.
 
@@ -34,6 +34,14 @@ TP17 measured **2.5 V**. Use the fixed **20 mA** DAC setting on this board. The 
 | The tested 8 GB Kioxia eMMC showed prior use. | Back up its contents first. Check the actual capacity, then use the RC2 8 GB image if it fits. |
 | Earlier r2/r4 rate-sweep overlays could hang during AXI access. | Use only matched r5 bundles. Run status-only before RFDC setup and capture. [Rate-sweep instructions](tests/adc-rate-sweep/) |
 | The tested board lacks a battery-backed clock. | Check `timedatectl status` after boot. If NTP is blocked, set UTC from a trusted source before TLS, package installation or timestamped measurements. |
+
+### DAC2 / J48
+
+DAC2 has a hardware fault in its output path. A scope, spectrum analyzer and direct RF loop measured the same high-pass-shaped loss. Direct loop peak levels were about 29 dB low at 500 MHz and 37 dB low at 100 MHz relative to the healthy loops. RFDC settings matched the other DAC blocks on the tile. ADC2 responded normally to an independent source. Visual inspection of J48 and the output components is pending. [Bring-up report](https://seguar.github.io/hamgeek-zu67dr-bringup/#dac2-verdict)
+
+## PL DDR4
+
+The vendor PDF's PL DDR4 pinout is incorrect for the tested card. Its build failed memory calibration. The [corrected pinout](docs/pl-ddr4-pinout.md) was recovered by boundary scan on the sister XCZU47DR and verified on the XCZU67DR. The PL memory is **one x32 DDR4-2400 interface, 2 GiB**. DQ, DQS and DM are in bank 66. Command and address are in bank 65, with **RESET_n on AE16**. The corrected build calibrated and passed 31 addresses in each polarity plus five full 2 GiB passes with zero mismatches.
 
 ## Clock and SYSREF input options
 
@@ -65,6 +73,13 @@ Each run on the bring-up installation captured **8 × 65,536 samples** with MTS.
 
 Measured crosstalk was ≤ −73 dBc relative to the driven channel at the tested tones (150 and 400 MHz). The largest coupled tone was on ADC2 with ADC1 driven at 400 MHz.
 
+## Home-bench results
+
+- Eight DAC-to-ADC loops were measured with ADC_AVCC at 0.93 V. Median absolute agreement with the lab prediction was 0.34 dB. Healthy-loop phase span was at most 0.131° at 100 MHz over ten warm reloads.
+- PCIe-edge GTY lanes 0–3 passed PRBS31 for 60 s with zero errors at 7.8125, 10.3125 and 15.625 Gb/s per lane. The board's Si5341 supplied 156.25 MHz and the WhiZZ 7420 fixture ran unpowered.
+
+[Interactive bench report](https://seguar.github.io/hamgeek-zu67dr-bringup/) · [Measured-characteristics datasheet (PDF)](https://seguar.github.io/hamgeek-zu67dr-bringup/HamGeek-ZU67DR-measured-characteristics-v1.0.pdf)
+
 ## RF and DDR test tools
 
 Download the matching archives from the [RC2 release](https://github.com/Seguar/HamGeek-ZU67DR-PYNQ/releases/tag/v4.0.0-zu67dr.1-rc2). Verify each archive against `SHA256SUMS` and the extracted files against the bundle's `artifacts.sha256`.
@@ -73,7 +88,7 @@ Download the matching archives from the [RC2 release](https://github.com/Seguar/
 - [r5 ADC rate-sweep overlays](tests/adc-rate-sweep/) cover 2.5, 2.9375 and 2.94912 GS/s, with status checks before RFDC setup and capture.
 - [8-DAC/8-ADC RF loopback](tests/rf-loopback/) uses the fixed 20 mA DAC mode, with a status-only entry point.
 - [ADC Nyquist helper](tests/adc-nyquist/) reads or sets ADC00 Nyquist parity and calibration mode.
-- [PL DDR4 test](tests/pl-ddr4/) checks calibration and exercises dedicated PL DDR4 windows.
+- [PL DDR4 test](tests/pl-ddr4/) describes the historical RC2 bundle. Its vendor-map overlay failed calibration. The verified build uses the [corrected pinout](docs/pl-ddr4-pinout.md).
 
 ## Validation
 
