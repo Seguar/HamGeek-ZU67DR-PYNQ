@@ -1,0 +1,17 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+    fragment@0 {
+        target-path = "/axi/spi@ff050000";
+        __overlay__ {
+            #address-cells = <1>;
+            #size-cells = <0>;
+            lmk04828@0 {
+                compatible = "ti,lmk04828";
+                reg = <0>;
+                spi-max-frequency = <500000>;
+            };
+        };
+    };
+};
