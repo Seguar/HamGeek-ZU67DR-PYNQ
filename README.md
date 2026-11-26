@@ -38,7 +38,7 @@ TP17 measured **2.5 V**. Use the fixed **20 mA** DAC setting on this board. The 
 | Symptom or finding | How to resolve |
 | --- | --- |
 | RC1 sees microSD as write-protected and fails to mount the ext4 root (EROFS). The socket lacks a write-protect line. | Use the stable image, or add `disable-wp` to SDHCI1 and deploy the rebuilt Linux DTB. The patched DTB booted on the tested card. |
-| LMK04828 PLL1 cannot discipline the fixed 19.2 MHz OCXO. | Use the onboard clock with PLL2 locked and PLL1 in holdover. External distribution through J35 and a VCXO rework are options below. |
+| LMK04828 PLL1 cannot lock (U47 is a fixed 19.2 MHz OCXO). | Use the [J35 external device clock](#external-device-clock-j35) to follow an external reference. |
 | Incorrect RF-ADC Nyquist parity degrades calibration and SFDR. | Select 1 for an odd input zone or 2 for an even zone. Read back the setting and let calibration settle. [ADC00 Nyquist helper](tests/adc-nyquist/) |
 | The tested 8 GB Kioxia eMMC showed prior use. | Back up its contents first. Check the actual capacity, then use the compact release image if it fits. |
 | Earlier r2/r4 rate-sweep overlays could hang during AXI access. | Use only matched r5 bundles. Run status-only before RFDC setup and capture. [Rate-sweep instructions](tests/adc-rate-sweep/) |
@@ -62,11 +62,84 @@ J35 (CLK1_IN) is a 50 Ω terminated, AC-coupled input to LMK04828 CLKin1. J32 (C
 
 | Objective | Candidate configuration |
 | --- | --- |
-| Use an external sample reference | Feed a compatible source into J35. Configure CLKin1 as the PLL2 reference or use distribution mode with an external clock at the required frequency. |
 | Supply or trigger SYSREF | Populate J66/J67 and configure the CLKin0 path for external SYSREF, or configure the LMK to generate SYSREF on a SYNC event from PS GPIO 26. |
 | Timestamp PPS | Capture J64 edges in the PL and timestamp them against the acquisition clock. |
-| Discipline the onboard oscillator to 10 MHz | Rework the fixed OCXO path for a compatible VCXO and verify PLL1 tuning range, loop response and lock against the external reference. |
+| Discipline the onboard oscillator to 10 MHz | Replace U47 with a compatible 19.2 MHz VCXO and verify PLL1 tuning range, loop response and lock. This rework is unverified. |
 
+## External device clock (J35)
+
+Feed a **1.5 GHz CW clock** into J35 to run LMK04828 CLKin1 in Fin distribution
+mode with both PLLs off. U47 is a fixed 19.2 MHz OCXO. A full PLL1 DAC sweep
+moved its frequency by **<0.002 ppm (MEAS)**, so PLL1 cannot steer it. J35
+cannot feed PLL2, whose reference input is OSCin. J66, J67 and U48 are
+unfitted on revision 2.1. A source locked to a lab 10 MHz reference lets
+the card follow that reference without rework. The VCXO alternative in
+[Clock and SYSREF input options](#clock-and-sysref-input-options) is unverified.
+
+Use a low-jitter sine source with modulation off. The Fin input requires
+**0.25–2.0 Vpp at the LMK pin** and **≥0.15 V/ns** slew (20–80%), with
+**≥0.5 V/ns** recommended (**D**). Start with **+3 dBm at the J35 cable end**
+measured into 50 Ω (0.89 Vpp **CALC**). The pin swing depends on the board's
+input transfer. The passing bench run used a +3 dBm generator setting before
+the splitter and had no cable-end calibration. [TI LMK04828, §7.5](https://www.ti.com/lit/ds/symlink/lmk04828.pdf#page=12)
+
+The r5 plan uses **Fin/6 = 250 MHz** for the references and **Fin/240 =
+6.25 MHz** for SYSREF (**CALC**). All LMK outputs retain the stock
+frequencies, formats and routing. The associated rates are 10 GS/s DAC,
+2.5 GS/s ADC and nominally 312.5 MHz fabric. See the
+[register and clock notes](tools/ext-clock-j35/CLOCK_NOTES.md).
+
+### Status-only, then warm reloads
+
+On the board, stop other PL applications and DAC playback. With the source
+RF off, connect it to J35 and connect an analyzer or a suitable scope to
+J32. Set the source and enable RF. Extract
+[`rowtiming-r5-20ma.tar.xz`](https://github.com/Seguar/HamGeek-ZU67DR-PYNQ/releases/download/v4.0.0-zu67dr.1/rowtiming-r5-20ma.tar.xz).
+From the repo root, set `BUNDLE` to the extracted directory and `TP16_V`
+to the measured ADC_AVCC (0.980–1.040 V for the MTS test). Confirm DAC_AVTT
+at TP17 is 2.5 V.
+
+```bash
+. /etc/profile.d/xrt_setup.sh
+j35() {
+  sudo -E /usr/local/share/pynq-venv/bin/python -B -u \
+    tools/ext-clock-j35/run_ext_clock.py "$@"
+}
+j35 run --bundle "${BUNDLE:?Set BUNDLE to the extracted directory}" \
+  --confirm-j32 --status-only --output j35-status &&
+j35 run --bundle "$BUNDLE" --confirm-j32 --adc-avcc "${TP16_V:?Set TP16_V}" \
+  --cycles 10 --output j35-warm
+```
+
+At each prompt, confirm a stable **250 MHz at J32** after Fin programming.
+Type `250MHz` only after observing the clock. Press Enter to abort. For an
+automated J32 check, replace `--confirm-j32` in both commands with
+`--analyzer-host "$ANALYZER_HOST"`. `--analyzer-port` sets the raw SCPI
+TCP port. See the [tool instructions](tools/ext-clock-j35/) for analyzer
+settings and per-cycle results.
+
+### Return to the onboard clock
+
+The runner restores the stock 3000 MHz internal VCO profile and checks
+PLL2 lock on exit, including after an abort. Keep the J35 source on until
+stock PLL2 lock is confirmed. To restore explicitly, run:
+
+```bash
+j35 restore --bundle "$BUNDLE"
+```
+
+### Bench results
+
+| Evidence | Result |
+| --- | --- |
+| **MEAS** · 1.5 GHz warm reloads | **10/10 passed**. Fabric 312.36–312.50 MHz, SYSREF 6.2493–6.2500 MHz, stream flags `0xf`. |
+| **MEAS** · RFDC multi-tile sync | DAC latency 432/432 and ADC 436/436 on every reload, zero offsets. |
+| **MEAS** · DAC7 phase | 1.44° peak-to-peak over 30 captures referenced to the same source (**CALC** ≈2.7 ps at 1.5 GHz). |
+| **MEAS** · 3 GHz | No 250 MHz at J32, with a splitter at +3 dBm generator setting or with a direct feed at +3 and +6 dBm generator settings. |
+
+The bench card measured 0.93 V at TP16 during these runs. Cold power-cycle
+repeatability, the cause of the 3 GHz failure, and the high-frequency J35
+transfer are open. The included 3 GHz profile is experimental.
 
 ## Measured r5 ADC rate sweep
 
