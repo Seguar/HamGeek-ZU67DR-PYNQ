@@ -76,9 +76,9 @@ Measured crosstalk was ≤ −73 dBc relative to the driven channel at the teste
 ## Home-bench results
 
 - Eight DAC-to-ADC loops were measured with ADC_AVCC at 0.93 V. Median absolute agreement with the lab prediction was 0.34 dB. Healthy-loop phase span was at most 0.131° at 100 MHz over ten warm reloads.
-- PCIe-edge GTY lanes 0–3 passed PRBS31 for 60 s with zero errors at 7.8125, 10.3125 and 15.625 Gb/s per lane. The board's Si5341 supplied 156.25 MHz and the WhiZZ 7420 fixture ran unpowered.
+- PCIe-edge GTY lanes 0–3 passed 60 s of PRBS31 at 7.8125, 10, 10.3125, 15.625 and 20 Gb/s per lane using the Si5341 reference and an unpowered fixture. The 20 Gb/s soak stopped after 111.1 s with one lane 3 error.
 
-[Interactive bench report](https://seguar.github.io/hamgeek-zu67dr-bringup/) · [Measured-characteristics datasheet (PDF)](https://seguar.github.io/hamgeek-zu67dr-bringup/HamGeek-ZU67DR-measured-characteristics-v1.0.pdf)
+[Interactive bench report](https://seguar.github.io/hamgeek-zu67dr-bringup/) · [Measured-characteristics datasheet (PDF)](https://seguar.github.io/hamgeek-zu67dr-bringup/HamGeek-ZU67DR-measured-characteristics-v1.1.pdf)
 
 ## RF and DDR test tools
 
