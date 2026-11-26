@@ -1,6 +1,8 @@
 # PL DDR4 test
 
-**Built, not yet run on hardware.** Download and extract `pl-ddr4.tar.xz`. Verify the hashes and confirm both 200 MHz DDR4 reference clocks before running. The Si5341 status utility temporarily selects the I²C mux route and restores it. Use status-only first to verify both memory controllers calibrate.
+**Historical RC2 overlay.** The released two-controller overlay uses the vendor PDF pinout and timed out during calibration on the tested rev 2.1 card. The verified x32 build uses the [corrected pinout](../../docs/pl-ddr4-pinout.md). The commands below document the RC2 bundle and its expected status interface.
+
+To inspect the historical bundle, download and extract `pl-ddr4.tar.xz`. Verify the hashes and confirm both 200 MHz DDR4 reference clocks before running. The Si5341 status utility temporarily selects the I²C mux route and restores it. Use status-only first to verify both memory controllers calibrate.
 
 ```sh
 cd pl-ddr4
