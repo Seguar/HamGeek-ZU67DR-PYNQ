@@ -46,7 +46,7 @@ TP17 measured **2.5 V**. Use the fixed **20 mA** DAC setting on this board. The 
 
 ### DAC2 / J48
 
-DAC2 has a hardware fault in its output path. A scope, spectrum analyzer and direct RF loop measured the same high-pass-shaped loss. Direct loop peak levels were about 29 dB low at 500 MHz and 37 dB low at 100 MHz relative to the healthy loops. RFDC settings matched the other DAC blocks on the tile. ADC2 responded normally to an independent source. Visual inspection of J48 and the output components is pending. [Bring-up report](https://seguar.github.io/hamgeek-zu67dr-bringup/#dac2-verdict)
+Visual and mechanical inspection found a cracked ferrite core in DAC2 balun **U61**. Reduced magnetizing inductance explains the high-pass-shaped loss. A scope, spectrum analyzer and direct RF loop measured the output deficit. Direct loop peaks were about 29 dB low at 500 MHz and 37 dB low at 100 MHz. At 1 GHz the mechanical probe recorded a brief +22.62 dB recovery on DAC2 while the DAC1 reference stayed within 0.23 dB. Replace U61 with a **Mini-Circuits TCM2-63WX+** and rerun the DAC2-to-ADC2 loopback. [Bring-up report](https://seguar.github.io/hamgeek-zu67dr-bringup/#dac2-verdict)
 
 ## PL DDR4
 
@@ -85,7 +85,24 @@ Measured crosstalk was ≤ −73 dBc relative to the driven channel at the teste
 - Eight DAC-to-ADC loops were measured with ADC_AVCC at 0.93 V. Median absolute agreement with the lab prediction was 0.34 dB. Healthy-loop phase span was at most 0.131° at 100 MHz over ten warm reloads.
 - PCIe-edge GTY lanes 0–3 passed 60 s of PRBS31 at 7.8125, 10, 10.3125, 15.625 and 20 Gb/s per lane using the Si5341 reference and an unpowered fixture. The 20 Gb/s soak stopped after 111.1 s with one lane 3 error.
 
-[Interactive bench report](https://seguar.github.io/hamgeek-zu67dr-bringup/) · [Measured-characteristics datasheet (PDF)](https://seguar.github.io/hamgeek-zu67dr-bringup/HamGeek-ZU67DR-measured-characteristics-v1.2.pdf)
+### Low-frequency loopback
+
+The seven healthy DAC-to-ADC loops detected tones down to **22.6–27.7 kHz** individually. The lowest common passing tone was **29.1 kHz**. The test used RowTiming r5, 10 GS/s DAC at 0 dBFS, 2.5 GS/s ADC and ADC_AVCC 0.93 V. The tones passed when every repeat cleared local noise and the playback-off control by at least 10 dB. Below the 76.294 kHz native waveform limit, repeat-table playback and phase-aligned ADC captures covered two periods. Each result includes both baluns and the cables.
+
+| Loop | Lower −3 dB (kHz) | Lower −10 dB (kHz) | Lowest detectable (kHz) |
+| --- | ---: | ---: | ---: |
+| 0 | 215.0 | 113.1 | 25.4 |
+| 1 | 189.4 | 116.1 | 23.5 |
+| 2 (cracked U61) | 76,479.4 | 26,749.9 | 2,800.0 |
+| 3 | 208.5 | 99.4 | 26.5 |
+| 4 | 207.3 | 115.8 | 27.7 |
+| 5 | 202.1 | 112.9 | 24.4 |
+| 6 | 188.6 | 104.7 | 24.4 |
+| 7 | 190.8 | 102.8 | 22.6 |
+
+The crossings are interpolated relative to each loop's own 100 MHz level. The detection floor depends on the capture window and noise. [Sweep details and plots](https://seguar.github.io/hamgeek-zu67dr-bringup/#low-frequency-limit)
+
+[Interactive bench report](https://seguar.github.io/hamgeek-zu67dr-bringup/) · [Measured-characteristics datasheet (PDF)](https://seguar.github.io/hamgeek-zu67dr-bringup/HamGeek-ZU67DR-measured-characteristics-v1.3.pdf)
 
 ## RF and DDR test tools
 
