@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 """LMK04828 profile for the single 250 MHz reference (VCO 3000 MHz) on the
 HamGeek XCZU67DR, derived from the vendor 245.76 MHz table and the LMK04828
-datasheet (TI SNAS605AS). 
+datasheet (TI SNAS605AS).
 
 Evidence tags: V tool/built, CALC calculated, D datasheet, ASSUMED.
 """

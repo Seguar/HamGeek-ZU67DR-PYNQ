@@ -20,6 +20,8 @@ See the [bring-up instructions](bring-up.md) for the boot switches and serial co
 
 ## RF and DDR test tools
 
+Download the matching archives from the [RC2 release](https://github.com/Seguar/HamGeek-ZU67DR-PYNQ/releases/tag/v4.0.0-zu67dr.1-rc2). Verify each archive against `SHA256SUMS` and the extracted files against the bundle's `artifacts.sha256`.
+
 - [ADC00/J36](overlay/README.md) captures 32,768 real samples at 2.4576 GS/s and remains available from its [overlay prerelease](https://github.com/Seguar/HamGeek-ZU67DR-PYNQ/releases/tag/adc00-v0.1.0-rc1).
 - [r5 ADC rate-sweep overlays](tests/adc-rate-sweep/) cover 2.5, 2.9375 and 2.94912 GS/s, with status checks before RFDC setup and capture.
 - [8-DAC/8-ADC RF loopback](tests/rf-loopback/) uses the fixed 20 mA DAC mode, with a status-only entry point.
