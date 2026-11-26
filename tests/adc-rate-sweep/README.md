@@ -2,11 +2,13 @@
 
 Download the matching r5 bundle and verify its hashes before programming. Each archive contains its bit/HWH pair, the RFDC synchronization helper and the Python runner. Keep these files together. Use the PYNQ virtual environment shipped with RC2. When programming clocks, supply your own copy of the board's `adda_loop.zip` as `VENDOR_ZIP`. The profile is derived at runtime.
 
-| Archive | Rate (GS/s) | Fabric (MHz) | SYSREF (MHz) | Hardware status |
-| --- | ---: | ---: | ---: | --- |
-| `adc25-r5.tar.xz` | 2.5 | 312.5 | 6.25 | Built, not yet run on hardware |
-| `adc29375-r5.tar.xz` | 2.9375 | 367.1875 | 0.78125 | Built, not yet run on hardware |
-| `adc294912-r5.tar.xz` | 2.94912 | 368.64 | 3.84 | Status and capture passed on a bring-up installation |
+| Archive | Rate (GS/s) | Fabric (MHz) | SYSREF (MHz) | Run on hardware | MTS latency (tiles 0/1) | ADC0 SNR re FS (dB) | ADC0 NSD (dBFS/Hz) |
+| --- | ---: | ---: | ---: | --- | ---: | ---: | ---: |
+| `adc25-r5.tar.xz` | 2.5 | 312.5 | 6.25 | Pass | 80/80 | 61.5 | −152.52 |
+| `adc29375-r5.tar.xz` | 2.9375 | 367.1875 | 0.78125 | Pass | 76/76 | 61.0 | −152.63 |
+| `adc294912-r5.tar.xz` | 2.94912 | 368.64 | 3.84 | Pass | 76/76 | 61.0 | −152.65 |
+
+All three r5 bundles passed status, MTS and capture (8 × 65,536 samples each) on a bring-up installation. ADC0 received 150 MHz at −6 dBm from an unfiltered generator. Measured crosstalk was ≤ −73 dBc at the tested tones. ADC_AVCC was 0.93 V, outside the recommended range. [TP16 diagnosis and rework](../../README.md#adc_avcc-at-tp16)
 
 Use the rate for the extracted bundle and set `TP16_V` to your measured ADC_AVCC within 0.980–1.040 V. Start with status-only. It checks the status aperture and clocks without reaching RFDC register access or DMA.
 
