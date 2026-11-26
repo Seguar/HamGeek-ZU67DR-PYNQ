@@ -109,7 +109,7 @@ def interrupted(signum, _frame):
 
 
 def worker(argv, timeout):
-    process = subprocess.Popen([sys.executable, "-u", __file__, *argv], start_new_session=True)
+    process = subprocess.Popen([sys.executable, "-B", "-u", __file__, *argv], start_new_session=True)
     try:
         code = process.wait(timeout=timeout)
     except BaseException:

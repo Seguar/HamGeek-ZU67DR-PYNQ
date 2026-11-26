@@ -186,7 +186,7 @@ test_loopback.verify_overlay(folder / BITFILE)
 assert clock_guard.verify_bundle(folder / BITFILE) == (2.5, 312.5)
 """
         with run.prepared_bundle(source) as folder:
-            subprocess.run([sys.executable, "-c", script, str(folder)], check=True,
+            subprocess.run([sys.executable, "-B", "-c", script, str(folder)], check=True,
                            cwd=Path(__file__).resolve().parent)
 
 
