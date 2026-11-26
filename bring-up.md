@@ -4,8 +4,15 @@ The image uses PYNQ 4.0.0, Ubuntu 24.04 and AMD EDF 2025.2. The board schematic 
 
 The first image boots the processing system. It provides the FPGA manager and XRT so compatible overlays can be loaded separately. ADC00/J36 capture requires a card-specific RFDC overlay and clock setup. The vendor bare-metal application and its bitstream are kept outside the SD image.
 
-Use the standard RC2 image for a 16 GB or larger microSD. Use the 8 GB RC2 variant when the media holds fewer than 8,266,973,184 bytes. The 8 GB variant requires at least 7,645,691,904 bytes. Fresh boot on both media is pending. Boot with one copy of the chosen image connected, since duplicate copies share partition IDs. Verify the compressed and expanded image against the supplied SHA-256 files. Flash the expanded disk image to the whole microSD using the workstation's SD-card writer.
+Use the [standard release image](https://github.com/Seguar/HamGeek-ZU67DR-PYNQ/releases/tag/v4.0.0-zu67dr.1) on media with at least 8,266,973,184 bytes. The compact variant requires 7,645,691,904 bytes and passed boot from the fitted eMMC. Check the archive and expanded image against the supplied SHA-256 files. Write to the whole target device. Connect one copy of a given image at boot to keep its partition IDs unique.
 
-Use SD1 2.0 boot. The schematic lists MIO MODE[3:0] = 0101 for this setting. Follow the schematic and board markings for switch orientation. Connect the PS UART at 115200 baud, 8N1, and the RJ45 port to a DHCP-enabled bench network. Expect FSBL, U-Boot, Linux and then the PYNQ/Jupyter service. Consult the DHCP leases for the board's IP address and open Jupyter on that address. Use the standard PYNQ factory credentials on an isolated bench network.
+With power off, set SW1 in pole order 1–4. Up (ON, marked “1”) is logic 1. Pole 1 is MODE bit 0.
 
-Record the serial log from power-on, board model, root mount, block device list and IP address. Run pynq-selftest for the installed image checks. Save the exact image SHA-256 with the log. The physical card was offline during image preparation.
+| Medium | MODE[3:0] | Pole 1 | Pole 2 | Pole 3 | Pole 4 |
+| --- | --- | --- | --- | --- | --- |
+| microSD (SD1) | `0101` | Up | Down | Up | Down |
+| eMMC (eMMC18) | `0110` | Down | Up | Up | Down |
+
+Connect the PS UART at 115200 baud, 8N1, and the RJ45 port to a DHCP-enabled bench network. Expect FSBL, U-Boot, Linux and then Jupyter on port 9090. Use the standard PYNQ factory credentials on an isolated bench network.
+
+Record the serial log from power-on, board model, root mount, block device list and exact image SHA-256. Run `pynq-selftest` for the installed image checks.
