@@ -47,7 +47,8 @@ ip zero8 xlconstant:1.1 CONFIG.CONST_WIDTH 8 CONFIG.CONST_VAL 0
 ip keep xlconstant:1.1 CONFIG.CONST_WIDTH 4 CONFIG.CONST_VAL 15
 wire zynq_ultra_ps_e_0/pl_clk0 zynq_ultra_ps_e_0/maxihpm0_lpd_aclk zynq_ultra_ps_e_0/saxihp0_fpd_aclk rst/slowest_sync_clk ctrl/aclk mem/aclk dma/s_axi_lite_aclk dma/m_axi_mm2s_aclk dma/m_axi_s2mm_aclk cfr/s_axi_aclk cfr/aclk frame/clk
 wire zynq_ultra_ps_e_0/pl_resetn0 rst/ext_reset_in
-wire one/dout rst/dcm_locked cfr/m_axis_dout_tready cfr/s_axis_din_tvalid
+wire one/dout rst/dcm_locked cfr/m_axis_dout_tready
+wire frame/stream_started cfr/s_axis_din_tvalid
 wire zero/dout rst/aux_reset_in rst/mb_debug_sys_rst
 wire rst/peripheral_aresetn ctrl/aresetn mem/aresetn dma/axi_resetn cfr/s_axi_aresetn cfr/aresetn frame/resetn
 foreach {src dst} {

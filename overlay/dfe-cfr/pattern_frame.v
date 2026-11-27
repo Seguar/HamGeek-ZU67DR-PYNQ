@@ -3,7 +3,7 @@
 module pattern_frame(
     input clk, input resetn,
     input [31:0] tx_data, input tx_valid, input tx_last, output tx_ready,
-    output [31:0] cfr_in, input cfr_ready,
+    output [31:0] cfr_in, output reg stream_started, input cfr_ready,
     input [31:0] cfr_out, input cfr_valid,
     output [31:0] rx_data, output rx_valid, output rx_last, input rx_ready
 );
@@ -30,6 +30,7 @@ module pattern_frame(
         result <= capture[state == DRAIN ? pos + {13'b0,sending} : 14'd0];
         if (!resetn) begin
             state <= LOAD;
+            stream_started <= 0;
             pos <= 0;
         end else begin
             case (state)
@@ -40,7 +41,10 @@ module pattern_frame(
                         if (&pos) state <= PRIME;
                     end
                 end
-                PRIME: state <= PLAY;
+                PRIME: begin
+                    stream_started <= 1;
+                    state <= PLAY;
+                end
                 PLAY: if (taking) begin
                     pos <= pos + 1'b1;
                     if (&pos) state <= DRAIN;
