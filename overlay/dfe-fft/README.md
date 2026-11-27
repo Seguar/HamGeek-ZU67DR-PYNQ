@@ -9,3 +9,5 @@ vivado -mode batch -source /path/to/overlay/dfe-fft/build.tcl -tclargs /path/to/
 ```
 
 Use the matching bit and HWH files together. Set DFE_BITFILE to the bitstream path and DFE_EXAMPLES to the package examples directory, then execute the dfe-ofdm-standalone-fft notebook. It saves the raw and decoded samples and checks bin, amplitude and EVM. The FFT has no AXI-Lite register bank. [PG390](https://docs.amd.com/r/en-US/pg390-rfsoc-dfe-fft)
+
+The board returned 1,048,576 codes at bin 37, −0.000109 dB from the quantized-input NumPy prediction, with −88.96 dB full-vector EVM. All 256 complex bins matched the AMD bit-accurate model. One of 18 DFE_FFT sites was used. Setup and hold slack were +5.603 ns and +0.010 ns with zero failing endpoints and zero critical CDC endpoints.

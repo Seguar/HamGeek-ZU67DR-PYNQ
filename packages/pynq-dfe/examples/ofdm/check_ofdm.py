@@ -20,12 +20,12 @@ def configure(device, scale):
     for trigger in (triggers.Activate, triggers.CCUpdate):
         trigger.Mode, trigger.TuserEdgeLevel, trigger.TUSERBit = 1, 3, 0
     device.call("SetTriggersCfg", triggers)
-    device.call("SetTuserOutFrameLocation", 0)
-    device.call("SetTuserCCUpdateTrigger", 1)
     device.activate()
     time.sleep(0.04)
     if device.call("ReadReg", 0x20) & 1 != 1:
         raise RuntimeError("Frame-triggered activation did not complete")
+    device.call("SetTuserOutFrameLocation", 0)
+    device.call("SetTuserCCUpdateTrigger", 1)
     carrier = device.new("CarrierCfg", dict(Numerology=0, FftSize=2048,
                          NumSubcarriers=SC, ScaleFactor=scale, CommsStandard=0))
     ft = device.new("FTSequence", dict(Length=1, CCID=[0]))
@@ -115,5 +115,12 @@ def run(bitfile, output):
             for device in (ul, dl):
                 if device.call("GetStateID") == 5:
                     device.deactivate()
+                    # UL needs DL frame markers until its one-shot takes effect.
+                    deadline = time.monotonic() + 0.05
+                    while device.call("ReadReg", 0x20) & 1 and time.monotonic() < deadline:
+                        time.sleep(0.001)
+                device.reset()
+                if device.call("ReadReg", 4) & 1 != 1:
+                    raise RuntimeError("OFDM reset did not assert on teardown")
     (out / "result.json").write_text(json.dumps(results, indent=2))
     return results
