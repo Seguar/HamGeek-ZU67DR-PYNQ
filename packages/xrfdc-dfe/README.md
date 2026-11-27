@@ -7,24 +7,14 @@ the local PYNQ MMIO array and retains it for the instance lifetime.
 
 ## Board installation
 
-The PYNQ 4.0.0 image venv uses Python 3.12.3 and includes cffi 2.1.0 and
-wurlitzer 3.1.1. The Ubuntu 24.04 arm64 package manifest includes `libsysfs2`. The wheel contains a native Linux aarch64 library, a private copy
-of libmetal and ABI-mode cffi declarations. Stage the wheel and dependency
-wheels on `/data` or `/dev/shm`. With the wheelhouse in `/data/wheels`, use
-the existing PYNQ venv and keep the install itself on the data partition:
+Install the [DFE v0.1.0 release](https://github.com/Seguar/HamGeek-ZU67DR-PYNQ/releases/tag/dfe-v0.1.0) on the stable image `v4.0.0-zu67dr.1`. Download all release assets into one directory on the mounted data partition or in `/dev/shm`. From that directory run:
 
 ```sh
-python=/usr/local/share/pynq-venv/bin/python
-"$python" -c 'import pynq; print(pynq.__version__)'
-"$python" -m pip install --no-index --no-cache-dir --no-deps --target /data/xrfdc-site \
-    /data/wheels/xrfdc-*.whl
-export PYTHONPATH="/data/xrfdc-site${PYTHONPATH:+:$PYTHONPATH}"
-"$python" -c 'import cffi, wurlitzer, xrfdc; print(xrfdc.RFdc.bindto)'
+sha256sum -c SHA256SUMS
+sudo bash install.sh
 ```
 
-If the venv lacks cffi or wurlitzer, install their staged wheels (and
-pycparser for cffi) to the same target. Set PYTHONPATH before starting the
-notebook kernel or Python process. A target under /dev/shm lasts until reboot.
+The installer registers both wheels in the board's PYNQ venv, with the package files and five native libraries on `/data`. Restart existing Jupyter kernels after installation. Overlays default to `/data/overlays/dfe`. Use `--overlay-dir /absolute/path` to choose an empty directory on a data volume. Run `sudo bash install.sh --uninstall` from the release directory to remove the installation.
 
 ## Native build and offline checks
 
