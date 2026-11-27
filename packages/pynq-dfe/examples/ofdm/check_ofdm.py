@@ -11,6 +11,7 @@ from model import (DL_SCALE, UL_SCALE, EVM_LIMIT_DB, MAG_LIMIT_DB, SC,
 
 
 def configure(device, scale):
+    print(device.versions(), flush=True)
     device.reset()
     device.configure()
     device.initialize(CCSequenceLength=16)
@@ -23,7 +24,9 @@ def configure(device, scale):
     device.call("SetTuserCCUpdateTrigger", 1)
     device.activate()
     time.sleep(0.04)
-    carrier = device.new("CarrierCfg", dict(Numerology=0, FftSize=11,
+    if device.call("ReadReg", 0x20) & 1 != 1:
+        raise RuntimeError("Frame-triggered activation did not complete")
+    carrier = device.new("CarrierCfg", dict(Numerology=0, FftSize=2048,
                          NumSubcarriers=SC, ScaleFactor=scale, CommsStandard=0))
     ft = device.new("FTSequence", dict(Length=1, CCID=[0]))
     cfg = device.new("CCCfg")
@@ -70,25 +73,37 @@ def run(bitfile, output):
                     configure(dl, DL_SCALE)
                     configure(ul, UL_SCALE)
                 time.sleep(0.04)
+                # Start a fresh observation window after the input change settles.
+                for device in (dl, ul):
+                    status = device.new("Status")
+                    device.call("GetEventStatus", status)
+                    device.call("ClearEventStatus", status)
                 dma.recvchannel.transfer(rx)
                 arm.write(0, 1)
                 wait(dma.recvchannel, dma)
                 arm.write(0, 0)
                 assert dma.recvchannel.transferred == rx.nbytes
-                data = rx.copy()
+                flags = {}
+                for label, device in (("dl", dl), ("ul", ul)):
+                    status = device.new("Status")
+                    device.call("GetEventStatus", status)
+                    flags[label] = {field: int(getattr(status, field)) for field in
+                                    ("FTCCSequenceError", "Saturation", "Overflow")}
+                data = np.array(rx)
                 cp, predicted = reference(s)
                 np.savez(out / (kind + ".npz"), input=s, time_reference=cp, raw=data, predicted=predicted)
                 for a in range(2):
                     measured = data[:, 2*a] + 1j*data[:, 2*a+1]
                     error = float(evm_db(measured, predicted))
                     roundtrip = float(evm_db(measured, s))
-                    row = dict(kind=kind, lane=a, evm_db=error, roundtrip_db=roundtrip,
+                    row = dict(kind=kind, lane=a, events=flags, evm_db=error, roundtrip_db=roundtrip,
                                passed=error < EVM_LIMIT_DB and roundtrip < EVM_LIMIT_DB)
                     if kind == "tone":
                         row.update(bin=int(np.argmax(abs(measured))), magnitude=float(abs(measured[37])),
                                    predicted_magnitude=float(abs(predicted[37])))
                         row["magnitude_error_db"] = float(20*np.log10(max(row["magnitude"], 1e-30)/row["predicted_magnitude"]))
                         row["passed"] &= row["bin"] == 37 and abs(row["magnitude_error_db"]) <= MAG_LIMIT_DB
+                    row["passed"] &= all(not any(values.values()) for values in flags.values())
                     results.append(row)
         finally:
             arm.write(0, 0)
