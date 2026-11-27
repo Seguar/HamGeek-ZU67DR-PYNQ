@@ -1,8 +1,8 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 --------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version      : Vivado v.2025.2 (lin64) Build 6299465 Fri Nov 14 12:34:56 MST 2025
-| Date              : Fri Nov 27 15:23:27 2026
-| Command           : report_cdc -details -file final-cdc.rpt
+| Date              : Fri Nov 27 15:44:42 2026
+| Command           : report_cdc -details -file run/cdc.rpt
 | Design            : dfe_mixer_ccf_wrapper
 | Device            : xczu67dr-fsve1156
 | Speed File        : -2  PRODUCTION 1.30 01-25-2022
@@ -14,7 +14,7 @@ CDC Report
 
 ID      Severity  Count  Description
 ------  --------  -----  -------------------------------------------------------
-CDC-3   Info         33  1-bit synchronized with ASYNC_REG property
+CDC-3   Info         37  1-bit synchronized with ASYNC_REG property
 CDC-9   Info          3  Asynchronous reset synchronized with ASYNC_REG property
 CDC-11  Critical      5  Fan-out from launch flop to destination clock
 CDC-13  Critical      2  1-bit CDC path on a non-FD primitive
@@ -31,7 +31,9 @@ Row  ID     Severity  Description                                              D
   3  CDC-3  Info      1-bit synchronized with ASYNC_REG property                   3  False Path               dfe_mixer_ccf_i/rfdc/inst/mt_dac_fifo_en_ff_reg/C                              dfe_mixer_ccf_i/rfdc/inst/dfe_mixer_ccf_rfdc_0_rf_wrapper_i/i_fifo_ctrl_dac/Ixpm_cdc_fifo_en/syncstages_ff_reg[0]/D
   4  CDC-3  Info      1-bit synchronized with ASYNC_REG property                   3  False Path               dfe_mixer_ccf_i/rfdc/inst/mt_dac_fifo_src_ff_reg/C                             dfe_mixer_ccf_i/rfdc/inst/dfe_mixer_ccf_rfdc_0_rf_wrapper_i/i_fifo_ctrl_dac/Ixpm_cdc_fifo_src/syncstages_ff_reg[0]/D
   5  CDC-9  Info      Asynchronous reset synchronized with ASYNC_REG property      3  False Path               dfe_mixer_ccf_i/rfdc/inst/mts_sysref_count_start_reg[1]/C                      dfe_mixer_ccf_i/rfdc/inst/i_mts_sysref_count_dac/i_xpm_cdc_single_start_pulse/arststages_ff_reg[0]/PRE
-  6  CDC-3  Info      1-bit synchronized with ASYNC_REG property                   2  Max Delay Datapath Only  dfe_mixer_ccf_i/control/U0/gpio_core_1/Not_Dual.gpio_Data_Out_reg[2]/C         dfe_mixer_ccf_i/tone/inst/enable_sync_reg[0]/D
+  6  CDC-3  Info      1-bit synchronized with ASYNC_REG property                   2  Max Delay Datapath Only  dfe_mixer_ccf_i/control/U0/gpio_core_1/Dual.gpio_Data_Out_reg[4]/C             dfe_mixer_ccf_i/tone/inst/ctrl_meta_reg[0]/D
+  7  CDC-3  Info      1-bit synchronized with ASYNC_REG property                   2  Max Delay Datapath Only  dfe_mixer_ccf_i/control/U0/gpio_core_1/Dual.gpio_Data_Out_reg[1]/C             dfe_mixer_ccf_i/tone/inst/ctrl_meta_reg[1]/D
+  8  CDC-3  Info      1-bit synchronized with ASYNC_REG property                   2  Max Delay Datapath Only  dfe_mixer_ccf_i/control/U0/gpio_core_1/Dual.gpio_Data_Out_reg[0]/C             dfe_mixer_ccf_i/tone/inst/ctrl_meta_reg[2]/D
 
 Source Clock: clk_pl_0
 Destination Clock: c1
@@ -39,8 +41,8 @@ CDC Type: No Common Primary Clock
 
 Row  ID      Severity  Description                                              Depth  Exception                Source (From)                                                                         Destination (To)
 ---  ------  --------  -------------------------------------------------------  -----  -----------------------  ------------------------------------------------------------------------------------  --------------------------------------------------------------------------------------------------------------------
-  1  CDC-3   Info      1-bit synchronized with ASYNC_REG property                   2  Max Delay Datapath Only  dfe_mixer_ccf_i/control/U0/gpio_core_1/Not_Dual.gpio_Data_Out_reg[0]/C                dfe_mixer_ccf_i/capture/inst/raw_sync_reg[0]/D
-  2  CDC-3   Info      1-bit synchronized with ASYNC_REG property                   2  Max Delay Datapath Only  dfe_mixer_ccf_i/control/U0/gpio_core_1/Not_Dual.gpio_Data_Out_reg[1]/C                dfe_mixer_ccf_i/capture/inst/request_sync_reg[0]/D
+  1  CDC-3   Info      1-bit synchronized with ASYNC_REG property                   2  Max Delay Datapath Only  dfe_mixer_ccf_i/control/U0/gpio_core_1/Dual.gpio_Data_Out_reg[2]/C                    dfe_mixer_ccf_i/capture/inst/raw_sync_reg[0]/D
+  2  CDC-3   Info      1-bit synchronized with ASYNC_REG property                   2  Max Delay Datapath Only  dfe_mixer_ccf_i/control/U0/gpio_core_1/Dual.gpio_Data_Out_reg[3]/C                    dfe_mixer_ccf_i/capture/inst/request_sync_reg[0]/D
   3  CDC-3   Info      1-bit synchronized with ASYNC_REG property                   4  False Path               dfe_mixer_ccf_i/rfdc/inst/dfe_mixer_ccf_rfdc_0_rf_wrapper_i/adc0_done_i_reg/C         dfe_mixer_ccf_i/rfdc/inst/dfe_mixer_ccf_rfdc_0_rf_wrapper_i/cdc_adc0_done_i/syncstages_ff_reg[0]/D
   4  CDC-3   Info      1-bit synchronized with ASYNC_REG property                   4  False Path               dfe_mixer_ccf_i/rfdc/inst/dfe_mixer_ccf_rfdc_0_rf_wrapper_i/adc1_done_i_reg/C         dfe_mixer_ccf_i/rfdc/inst/dfe_mixer_ccf_rfdc_0_rf_wrapper_i/cdc_adc1_done_i/syncstages_ff_reg[0]/D
   5  CDC-3   Info      1-bit synchronized with ASYNC_REG property                   4  False Path               dfe_mixer_ccf_i/rfdc/inst/dfe_mixer_ccf_rfdc_0_rf_wrapper_i/adc2_done_i_reg/C         dfe_mixer_ccf_i/rfdc/inst/dfe_mixer_ccf_rfdc_0_rf_wrapper_i/cdc_adc2_done_i/syncstages_ff_reg[0]/D
@@ -134,12 +136,14 @@ Source Clock: c0
 Destination Clock: clk_pl_0
 CDC Type: No Common Primary Clock
 
-Row  ID      Severity  Description                                    Depth  Exception   Source (From)                                                               Destination (To)
----  ------  --------  ---------------------------------------------  -----  ----------  --------------------------------------------------------------------------  ---------------------------------------------------------------------------------------------
-  1  CDC-11  Critical  Fan-out from launch flop to destination clock      4  False Path  dfe_mixer_ccf_i/dac_reset/U0/ACTIVE_LOW_PR_OUT_DFF[0].FDRE_PER_N/C          dfe_mixer_ccf_i/rfdc/inst/cdc_dac0_clk_valid_i/syncstages_ff_reg[0]/D
-  2  CDC-11  Critical  Fan-out from launch flop to destination clock      4  False Path  dfe_mixer_ccf_i/dac_reset/U0/ACTIVE_LOW_PR_OUT_DFF[0].FDRE_PER_N/C          dfe_mixer_ccf_i/rfdc/inst/cdc_dac1_clk_valid_i/syncstages_ff_reg[0]/D
-  3  CDC-3   Info      1-bit synchronized with ASYNC_REG property         3  False Path  dfe_mixer_ccf_i/clk_gen/inst/sysref_dac_reg/C                               dfe_mixer_ccf_i/rfdc/inst/i_mts_sysref_count_dac/i_xpm_cdc_sysref/syncstages_ff_reg[0]/D
-  4  CDC-3   Info      1-bit synchronized with ASYNC_REG property         5  False Path  dfe_mixer_ccf_i/rfdc/inst/i_mts_sysref_count_dac/sysref_freq_done_ff_reg/C  dfe_mixer_ccf_i/rfdc/inst/i_mts_sysref_count_dac/i_xpm_cdc_sysref_done/syncstages_ff_reg[0]/D
+Row  ID      Severity  Description                                    Depth  Exception                Source (From)                                                               Destination (To)
+---  ------  --------  ---------------------------------------------  -----  -----------------------  --------------------------------------------------------------------------  ---------------------------------------------------------------------------------------------
+  1  CDC-3   Info      1-bit synchronized with ASYNC_REG property         7  Max Delay Datapath Only  dfe_mixer_ccf_i/tone/inst/ctrl_sync_reg[0]/C                                dfe_mixer_ccf_i/capture/inst/status_meta_reg[0]/D
+  2  CDC-3   Info      1-bit synchronized with ASYNC_REG property         7  Max Delay Datapath Only  dfe_mixer_ccf_i/tone/inst/fault_reg/C                                       dfe_mixer_ccf_i/capture/inst/status_meta_reg[1]/D
+  3  CDC-11  Critical  Fan-out from launch flop to destination clock      4  False Path               dfe_mixer_ccf_i/dac_reset/U0/ACTIVE_LOW_PR_OUT_DFF[0].FDRE_PER_N/C          dfe_mixer_ccf_i/rfdc/inst/cdc_dac0_clk_valid_i/syncstages_ff_reg[0]/D
+  4  CDC-11  Critical  Fan-out from launch flop to destination clock      4  False Path               dfe_mixer_ccf_i/dac_reset/U0/ACTIVE_LOW_PR_OUT_DFF[0].FDRE_PER_N/C          dfe_mixer_ccf_i/rfdc/inst/cdc_dac1_clk_valid_i/syncstages_ff_reg[0]/D
+  5  CDC-3   Info      1-bit synchronized with ASYNC_REG property         3  False Path               dfe_mixer_ccf_i/clk_gen/inst/sysref_dac_reg/C                               dfe_mixer_ccf_i/rfdc/inst/i_mts_sysref_count_dac/i_xpm_cdc_sysref/syncstages_ff_reg[0]/D
+  6  CDC-3   Info      1-bit synchronized with ASYNC_REG property         5  False Path               dfe_mixer_ccf_i/rfdc/inst/i_mts_sysref_count_dac/sysref_freq_done_ff_reg/C  dfe_mixer_ccf_i/rfdc/inst/i_mts_sysref_count_dac/i_xpm_cdc_sysref_done/syncstages_ff_reg[0]/D
 
 Source Clock: c1
 Destination Clock: clk_pl_0
@@ -148,26 +152,26 @@ CDC Type: No Common Primary Clock
 Row  ID      Severity  Description                                     Depth  Exception                Source (From)                                                                         Destination (To)
 ---  ------  --------  ----------------------------------------------  -----  -----------------------  ------------------------------------------------------------------------------------  ---------------------------------------------------------------------------------------------
   1  CDC-3   Info      1-bit synchronized with ASYNC_REG property          2  Max Delay Datapath Only  dfe_mixer_ccf_i/capture/inst/complete_reg/C                                           dfe_mixer_ccf_i/capture/inst/complete_sync_reg[0]/D
-  2  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc03/mrk_cntr_ff_reg[0]/C         dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[0]/D
-  3  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc12/mrk_cntr_ff_reg[1]/C         dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[1]/D
-  4  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc12/mrk_cntr_ff_reg[2]/C         dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[2]/D
-  5  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc02/mrk_cntr_ff_reg[3]/C         dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[3]/D
+  2  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc10/mrk_cntr_ff_reg[0]/C         dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[0]/D
+  3  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc13/mrk_cntr_ff_reg[1]/C         dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[1]/D
+  4  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc11/mrk_cntr_ff_reg[2]/C         dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[2]/D
+  5  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc13/mrk_cntr_ff_reg[3]/C         dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[3]/D
   6  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc03/mrk_cntr_ff_reg[4]/C         dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[4]/D
   7  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/dfe_mixer_ccf_rfdc_0_rf_wrapper_i/rx0_u_adc/FABRIC_CLK      dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[5]/D
-  8  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc12/mrk_cntr_ff_reg[6]/C         dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[6]/D
-  9  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc02/mrk_cntr_ff_reg[7]/C         dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[7]/D
- 10  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc02/mrk_cntr_ff_reg[8]/C         dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[8]/D
+  8  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc03/mrk_cntr_ff_reg[6]/C         dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[6]/D
+  9  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc12/mrk_cntr_ff_reg[7]/C         dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[7]/D
+ 10  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc12/mrk_cntr_ff_reg[8]/C         dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[8]/D
  11  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc01/mrk_cntr_ff_reg[9]/C         dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[9]/D
- 12  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc10/mrk_cntr_ff_reg[10]/C        dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[10]/D
- 13  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc02/mrk_cntr_ff_reg[11]/C        dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[11]/D
- 14  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc13/mrk_cntr_ff_reg[12]/C        dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[12]/D
+ 12  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc12/mrk_cntr_ff_reg[10]/C        dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[10]/D
+ 13  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc01/mrk_cntr_ff_reg[11]/C        dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[11]/D
+ 14  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc12/mrk_cntr_ff_reg[12]/C        dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[12]/D
  15  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc12/mrk_cntr_ff_reg[13]/C        dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[13]/D
- 16  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc03/mrk_cntr_ff_reg[14]/C        dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[14]/D
- 17  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc02/mrk_cntr_ff_reg[15]/C        dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[15]/D
+ 16  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc02/mrk_cntr_ff_reg[14]/C        dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[14]/D
+ 17  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc12/mrk_cntr_ff_reg[15]/C        dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[15]/D
  18  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc02/mrk_loc_ff_reg[0]/C          dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[16]/D
- 19  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc03/mrk_loc_ff_reg[1]/C          dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[17]/D
- 20  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc02/mrk_loc_ff_reg[2]/C          dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[18]/D
- 21  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc01/mrk_loc_ff_reg[3]/C          dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[19]/D
+ 19  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc02/mrk_loc_ff_reg[1]/C          dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[17]/D
+ 20  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc12/mrk_loc_ff_reg[2]/C          dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[18]/D
+ 21  CDC-15  Warning   Clock enable controlled CDC structure detected      0  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc02/mrk_loc_ff_reg[3]/C          dfe_mixer_ccf_i/rfdc/inst/IP2Bus_Data_reg[19]/D
  22  CDC-3   Info      1-bit synchronized with ASYNC_REG property          4  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc00/mrk_cntr_done_ff_reg/C       dfe_mixer_ccf_i/rfdc/inst/cdc_adc00_mrk_cntr_done_i/syncstages_ff_reg[0]/D
  23  CDC-3   Info      1-bit synchronized with ASYNC_REG property          4  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc01/mrk_cntr_done_ff_reg/C       dfe_mixer_ccf_i/rfdc/inst/cdc_adc01_mrk_cntr_done_i/syncstages_ff_reg[0]/D
  24  CDC-3   Info      1-bit synchronized with ASYNC_REG property          4  False Path               dfe_mixer_ccf_i/rfdc/inst/i_rf_conv_mt_mrk_counter_adc02/mrk_cntr_done_ff_reg/C       dfe_mixer_ccf_i/rfdc/inst/cdc_adc02_mrk_cntr_done_i/syncstages_ff_reg[0]/D

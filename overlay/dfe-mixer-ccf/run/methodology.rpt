@@ -1,13 +1,13 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2025.2 (lin64) Build 6299465 Fri Nov 14 12:34:56 MST 2025
-| Date         : Fri Nov 27 15:22:18 2026
-| Command      : report_methodology -file dfe_mixer_ccf_wrapper_methodology_drc_routed.rpt -pb dfe_mixer_ccf_wrapper_methodology_drc_routed.pb -rpx dfe_mixer_ccf_wrapper_methodology_drc_routed.rpx
+| Date         : Fri Nov 27 15:44:44 2026
+| Command      : report_methodology -file run/methodology.rpt
 | Design       : dfe_mixer_ccf_wrapper
 | Device       : xczu67dr-fsve1156-2-i
 | Speed File   : -2
 | Design State : Fully Routed
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------
 
 Report Methodology
 
@@ -19,7 +19,7 @@ Table of Contents
 1. REPORT SUMMARY
 -----------------
             Netlist: netlist
-          Floorplan: design_1
+          Floorplan: impl_1
       Design limits: <entire design considered>
              Max checks: <unlimited>
              Checks found: 2

@@ -2,6 +2,9 @@
 
 Python bindings for the RFSoC DFE mixer 2.0, channel filter 1.1, equalizer 1.0, NR PRACH 2.0 and OFDM 2.2. The native libraries and generated declarations use AMD embeddedsw `xlnx_rel_v2025.2` (c3b3132f6e1e202e275b8dd77b3804f3b449528c), Linux non-SDT, AArch64.
 
+
+The [mixer and CCF example](../../overlay/dfe-mixer-ccf/README.md) connects the DAC0–ADC0 loop to both hard blocks. Its [notebook](../../notebooks/dfe-mixer-ccf.ipynb) measures NCO translation and compares raw and filtered tone levels.
+
 ## Installation on PYNQ 4.0.0
 
 Build the five native libraries using the companion build_libs.sh and LIBS.md. Build the binding wheel in this directory with `python -m pip wheel --no-deps .`. Stage the wheel in /data/dfe and the five libxdfe*.so files in /data/dfe/lib. In the activated board venv use the following commands. /dev/shm can replace /data for a temporary installation.

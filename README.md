@@ -177,6 +177,10 @@ The crossings are interpolated relative to each loop's own 100 MHz level. The de
 
 [Interactive bench report](https://seguar.github.io/hamgeek-zu67dr-bringup/) · [Measured-characteristics datasheet (PDF)](https://seguar.github.io/hamgeek-zu67dr-bringup/HamGeek-ZU67DR-measured-characteristics-v1.3.pdf)
 
+## Hard DFE mixer and channel filter
+
+The [DFE notebook](notebooks/dfe-mixer-ccf.ipynb) uses DAC0/J44 and ADC0/J36 to measure frequency translation and channel rejection. The [overlay and installation guide](overlay/dfe-mixer-ccf/README.md) includes the hardware interface, clock setup and build steps.
+
 ## RF and DDR test tools
 
 Download the matching archives from the [stable release](https://github.com/Seguar/HamGeek-ZU67DR-PYNQ/releases/tag/v4.0.0-zu67dr.1). Verify each archive against `SHA256SUMS` and the extracted files against the bundle's `artifacts.sha256`.

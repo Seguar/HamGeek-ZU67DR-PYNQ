@@ -99,6 +99,30 @@
     "frame_words": 1024,
     "word_bytes": 4,
     "tone_hz": 78125000,
-    "sample_rate_hz": 312500000
+    "sample_rate_hz": 312500000,
+    "tone_select_lsb": 3,
+    "tone_modes_MHz": [
+      [
+        78.125
+      ],
+      [
+        39.0625
+      ],
+      [
+        117.1875
+      ],
+      [
+        39.0625,
+        117.1875
+      ]
+    ],
+    "status_offset": 8,
+    "status_busy_bit": 0,
+    "status_fault_bit": 1
+  },
+  "mixer_trigger": {
+    "input": "s_axis_ul_din_tuser[0]",
+    "period_adc_clocks": 16,
+    "edge": "rising"
   }
 }

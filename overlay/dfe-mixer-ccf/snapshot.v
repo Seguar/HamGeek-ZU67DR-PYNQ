@@ -6,7 +6,9 @@ module snapshot (
     (* X_INTERFACE_INFO="xilinx.com:signal:clock:1.0 host_clk CLK", X_INTERFACE_PARAMETER="XIL_INTERFACENAME host_clk, ASSOCIATED_BUSIF M_AXIS, ASSOCIATED_RESET host_resetn" *)
     input wire host_clk,
     input wire host_resetn,
-    input wire [2:0] control,
+    input wire [4:0] control,
+    input wire [1:0] tone_status, output wire [1:0] host_status,
+    output wire [7:0] mix_tuser,
     input wire [31:0] raw_data, filtered_data,
     input wire raw_valid, filtered_valid,
     (* X_INTERFACE_INFO = "xilinx.com:interface:axis:1.0 M_AXIS TDATA" *)
@@ -20,6 +22,19 @@ module snapshot (
 );
     (* ASYNC_REG="TRUE" *) reg [1:0] request_sync = 0, raw_sync = 0;
     (* ASYNC_REG="TRUE" *) reg [1:0] complete_sync = 0;
+    (* ASYNC_REG="TRUE" *) reg [1:0] status_meta = 0, status_sync = 0;
+    always @(posedge host_clk) begin
+        status_meta <= tone_status;
+        status_sync <= status_meta;
+    end
+    assign host_status = status_sync;
+    // PG393: activation and carrier updates share a 16*CPS clock boundary.
+    reg [3:0] mixer_cycle = 0;
+    always @(posedge adc_clk) begin
+        if (!adc_resetn) mixer_cycle <= 0;
+        else mixer_cycle <= mixer_cycle + 1'b1;
+    end
+    assign mix_tuser = {7'b0, mixer_cycle == 0};
     reg complete = 0, drained = 0;
     reg [9:0] wr = 0, rd = 0;
     (* ram_style="block" *) reg [31:0] ram [0:1023];
