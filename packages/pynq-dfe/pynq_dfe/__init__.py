@@ -6,3 +6,6 @@ try:
 except ModuleNotFoundError as exc:
     if exc.name != "pynq":
         raise
+else:
+    from .nlf import NlfIP
+    from .resampler import ResamplerIP
