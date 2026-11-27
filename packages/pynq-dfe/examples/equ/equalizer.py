@@ -114,8 +114,9 @@ def transfer(dma, x):
             ch.wait()
         if dma.recvchannel.transferred != rx.nbytes:
             raise RuntimeError("Short capture")
-        return (rx.astype(np.int16).astype(float) +
-                1j*(rx >> 16).astype(np.int16).astype(float))
+        words = np.asarray(rx)
+        return (words.astype(np.int16).astype(float) +
+                1j*(words >> 16).astype(np.int16).astype(float))
     except BaseException:
         dma.write(0, 4)
         wait_for(lambda: not dma.read(0) & 4, "DMA reset")
