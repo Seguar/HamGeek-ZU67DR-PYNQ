@@ -14,7 +14,7 @@ Use Vivado 2025.2 and the r5 PS preset obtained with the repository's overlay/ex
 vivado -mode batch -source build.tcl -tclargs /path/to/vendor-ps.tcl /path/to/new-output
 ```
 
-The script checks core licensing and routed setup/hold timing before exporting the bitstream, HWH, XSA and hashes. On the board, make the PR #9 pynq_dfe package and libxdfeprach.so available. Set PRACH_BITFILE to the matching bitstream next to its HWH, PRACH_OUTPUT to a writable data directory, and run notebooks/dfe-prach.ipynb. PRACH_EXAMPLES can override the relative path to the example Python modules.
+The script checks routed setup/hold timing before exporting the bitstream, HWH, XSA and hashes. On the board, make the PR #9 pynq_dfe package and libxdfeprach.so available. Set PRACH_BITFILE to the matching bitstream next to its HWH, PRACH_OUTPUT to a writable data directory, and run notebooks/dfe-prach.ipynb. PRACH_EXAMPLES can override the relative path to the example Python modules.
 
 The model uses the same quantized input as playback, the actual NCO word, an ideal antialias filter and the published 4.25-output-sample group delay. It compares correlation-domain metrics because the model does not contain the hardware filter coefficients. A reference capture establishes the common pipeline delay before measuring a 37-output-sample offset. The short-preamble test repeats the 139-element root's useful OFDM symbol with deterministic noise. It tests extraction rather than cyclic-prefix removal or MAC scheduling. See [AMD PG391](https://docs.amd.com/r/en-US/pg391-rfsoc-dfe-prach/Configuring-RACH-Extraction).
 

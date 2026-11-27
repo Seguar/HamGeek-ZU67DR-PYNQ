@@ -3,7 +3,7 @@
 Build with Vivado 2025.2 and the archived vendor PS preset used by the mixer/CCF overlay.
 Supply the preset and a fresh output directory as the two Tcl arguments to
 `vivado -mode batch -source build.tcl -tclargs vendor-ps.tcl out`. The script checks the
-preset hash and each IP licence property. It writes filter_test.bit, .hwh and .xsa,
+preset hash. It writes filter_test.bit, .hwh and .xsa,
 their SHA-256 manifest, and implementation reports in the output directory.
 
 The shared 100 MHz PS fabric clock drives DMA, control, both resamplers and the FIR.
