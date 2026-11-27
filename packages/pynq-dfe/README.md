@@ -2,8 +2,33 @@
 
 Python bindings for the RFSoC DFE mixer 2.0, channel filter 1.1, equalizer 1.0, NR PRACH 2.0 and OFDM 2.2. The native libraries and generated declarations use AMD embeddedsw `xlnx_rel_v2025.2` (c3b3132f6e1e202e275b8dd77b3804f3b449528c), Linux non-SDT, AArch64.
 
+## Board results
 
-The [mixer and CCF example](../../overlay/dfe-mixer-ccf/README.md) connects the DAC0–ADC0 loop to both hard blocks. Its [notebook](../../notebooks/dfe-mixer-ccf.ipynb) measures NCO translation and compares raw and filtered tone levels.
+The mixer and CCF share the DAC0/J44 → ADC0/J36 analog loopback. The remaining overlays move digital test vectors through the hard blocks and return their output to PS memory. All eight overlays were tested with Vivado 2025.2.
+
+| Hard block | Overlay | Driver or control | Notebook | Measured on XCZU67DR |
+|---|---|---|---|---|
+| Mixer | [dfe-mixer-ccf](../../overlay/dfe-mixer-ccf/README.md) | MixerIP | [mixer-ccf](../../notebooks/dfe-mixer-ccf.ipynb) | 78.125 MHz translated to +4.8828125 MHz with a 73.2421875 MHz NCO. |
+| Channel filter (CCF) | [dfe-mixer-ccf](../../overlay/dfe-mixer-ccf/README.md) | ChannelFilterIP | [mixer-ccf](../../notebooks/dfe-mixer-ccf.ipynb) | 53.09 dB two-tone rejection, matching the FIR prediction. |
+| Equalizer | [dfe-equ](../../overlay/dfe-equ/README.md) | EqualizerIP | [equ](../../notebooks/dfe-equ.ipynb) | 21/21 cases passed at 12 clocks of delay. All six impulse and step responses had zero component error. |
+| OFDM DL → UL | [dfe-ofdm](../../overlay/dfe-ofdm/README.md) | OfdmIP | [ofdm](../../notebooks/dfe-ofdm.ipynb) | All 5,088 complex values across two lanes and two vectors matched the fixed-point model. QPSK round-trip EVM was −79.78 dB. |
+| Standalone FFT | [dfe-fft](../../overlay/dfe-fft/README.md) | AXI DMA, fixed stream control | [ofdm-standalone-fft](../../notebooks/dfe-ofdm-standalone-fft.ipynb) | 256/256 complex bins matched the fixed-point model. Bin 37 measured 1,048,576 codes. |
+| NR PRACH | [dfe-prach](../../overlay/dfe-prach/README.md) | PrachIP | [prach](../../notebooks/dfe-prach.ipynb) | 21/21 checks passed. All 4,096 output samples matched the fixed-point model after a common one-sample alignment. |
+| P/Q resampler, decimation (2/3) | [dfe-resampler-nlf](../../overlay/dfe-resampler-nlf/README.md) | ResamplerIP | [resampler](../../notebooks/dfe-resampler.ipynb) | 3,072 → 2,048 samples. Alias rejection was 101.81 dB at the tested frequency. |
+| P/Q resampler, interpolation (2×) | [dfe-resampler-nlf](../../overlay/dfe-resampler-nlf/README.md) | ResamplerIP | [resampler](../../notebooks/dfe-resampler.ipynb) | 1,024 → 2,048 samples. First-image rejection was 89.81 dB at the tested frequency. |
+| NLF, two-tap FIR | [dfe-resampler-nlf](../../overlay/dfe-resampler-nlf/README.md) | NlfIP.load_fir | [nlf](../../notebooks/dfe-nlf.ipynb) | Both 1,024-sample captures matched the predicted I/Q codes exactly at a common delay of 23 samples. |
+| NLF, DPD actuator | [dfe-dpd](../../overlay/dfe-dpd/README.md) | NlfIP and pynq_dfe.dpd | [dpd](../../notebooks/dfe-dpd.ipynb) | Three Python updates reduced held-out EVM from 8.314% to 0.384% and improved worst-side ACPR by 22.36 dB. |
+| pc_cfr → DFE_CFR | [dfe-cfr](../../overlay/dfe-cfr/README.md) | HardCFR | [cfr](../../notebooks/dfe-cfr.ipynb) | Three PC stages reduced PAPR from 10.765 to 6.232 dB. PC and PC + WCFR each passed 9/9 checks. |
+
+DPD datapath (hard DFE_NLF) tested; AMD's adaptation product not used; adaptation implemented in Python; linearises a known digital PA model, not a real amplifier
+
+All seven critical mixer/CCF endpoints also occur in the deployed RowTiming r5 design. Sign-off remains open for five CDC-11 clock-valid reset fanouts. AMD’s generated RFDC XDC covers the two CDC-13 MTS FIFO enables. [Endpoint review](../../overlay/dfe-mixer-ccf/CDC.md)
+
+## Overlay binaries
+
+Build each overlay from its linked directory with the documented RowTiming r5 PS preset. The repository tracks build sources and SHA-256 manifests. Each overlay’s `run/artifacts.sha256` identifies the board-tested bitstream, HWH and XSA. Run `sha256sum -c artifacts.sha256` alongside those three artifacts to verify a copy of the tested build. A fresh build produces its own manifest.
+
+For PYNQ, place the matching same-stem `.bit` and `.hwh` files together and keep the `.xsa` in the build directory. PYNQ 4.0 changes its metadata parser when a same-stem XSA is beside the bitstream. Each overlay guide gives its notebook environment variables.
 
 ## Installation on PYNQ 4.0.0
 
@@ -22,7 +47,7 @@ Use the same package path and environment in the notebook kernel. The wheel cont
 
 ## Overlay use
 
-Import pynq_dfe before constructing the Overlay so PYNQ registers the five DefaultIP subclasses. Substitute the instance names from your overlay. Each IP's `.dfe` owns one native handle. Close it before unloading the overlay and serialize access to each handle.
+Import pynq_dfe before constructing the Overlay so PYNQ registers the native-driver IP classes and the NLF and resampler classes. Substitute the instance names from your overlay. Each native-driver IP’s `.dfe` owns one handle. Close it before unloading the overlay and serialize access to each handle.
 
 ```python
 import pynq_dfe
