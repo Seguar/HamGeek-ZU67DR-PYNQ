@@ -30,20 +30,16 @@ Build each overlay from its linked directory with the documented RowTiming r5 PS
 
 For PYNQ, place the matching same-stem `.bit` and `.hwh` files together and keep the `.xsa` in the build directory. PYNQ 4.0 changes its metadata parser when a same-stem XSA is beside the bitstream. Each overlay guide gives its notebook environment variables.
 
-## Installation on PYNQ 4.0.0
+## Board installation
 
-Build the five native libraries using the companion build_libs.sh and LIBS.md. Build the binding wheel in this directory with `python -m pip wheel --no-deps .`. Stage the wheel in /data/dfe and the five libxdfe*.so files in /data/dfe/lib. In the activated board venv use the following commands. /dev/shm can replace /data for a temporary installation.
+Install the [DFE v0.1.0 release](https://github.com/Seguar/HamGeek-ZU67DR-PYNQ/releases/tag/dfe-v0.1.0) on the stable image `v4.0.0-zu67dr.1`. Download all release assets into one directory on the mounted data partition or in `/dev/shm`. From that directory run:
 
 ```sh
-mkdir -p /data/dfe/python /data/dfe/tmp
-TMPDIR=/data/dfe/tmp python -m pip install --no-cache-dir --no-index --no-deps \
-    --target /data/dfe/python /data/dfe/pynq_dfe-*.whl
-export PYTHONPATH="/data/dfe/python${PYTHONPATH:+:$PYTHONPATH}"
-export PYNQ_DFE_LIBDIR=/data/dfe/lib
-python -c 'import pynq, numpy, cffi, pynq_dfe'
+sha256sum -c SHA256SUMS
+sudo bash install.sh
 ```
 
-Use the same package path and environment in the notebook kernel. The wheel contains the Python bindings and measured layouts. It requires cffi and NumPy in the venv. SciPy is optional. The kernel process needs permission to map PL registers through /dev/mem.
+The installer registers both wheels in the board's PYNQ venv, with the package files and five native libraries on `/data`. Restart existing Jupyter kernels after installation. Overlays default to `/data/overlays/dfe`. Use `--overlay-dir /absolute/path` to choose an empty directory on a data volume. Run `sudo bash install.sh --uninstall` from the release directory to remove the installation.
 
 ## Overlay use
 

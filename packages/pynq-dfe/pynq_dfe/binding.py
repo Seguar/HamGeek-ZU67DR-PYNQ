@@ -33,7 +33,14 @@ class Device:
         self.ffi = checked_ffi(driver)
         filename = f"libxdfe{driver}.so"
         directory = os.environ.get("PYNQ_DFE_LIBDIR")
-        self.lib = self.ffi.dlopen(str(Path(directory) / filename) if directory else filename)
+        bundled = Path(__file__).parent / "lib" / filename
+        if directory:
+            library = str(Path(directory) / filename)
+        elif bundled.is_file():
+            library = str(bundled)
+        else:
+            library = filename
+        self.lib = self.ffi.dlopen(library)
         values = config_fields(driver, description["parameters"])
         base = number(description["phys_addr"])
         size = number(description["addr_range"])

@@ -21,6 +21,17 @@ The first eMMC attempt selected PJTAG1 (`1001`) because the switch polarity in t
 
 The [RC2](https://github.com/Seguar/HamGeek-ZU67DR-PYNQ/releases/tag/v4.0.0-zu67dr.1-rc2) and [RC1](https://github.com/Seguar/HamGeek-ZU67DR-PYNQ/releases/tag/v4.0.0-zu67dr.1-rc1) pre-releases are superseded.
 
+## Board installation
+
+Install the [DFE v0.1.0 release](https://github.com/Seguar/HamGeek-ZU67DR-PYNQ/releases/tag/dfe-v0.1.0) on the stable image `v4.0.0-zu67dr.1`. Download all release assets into one directory on the mounted data partition or in `/dev/shm`. From that directory run:
+
+```sh
+sha256sum -c SHA256SUMS
+sudo bash install.sh
+```
+
+The installer registers both wheels in the board's PYNQ venv, with the package files and five native libraries on `/data`. Restart existing Jupyter kernels after installation. Overlays default to `/data/overlays/dfe`. Use `--overlay-dir /absolute/path` to choose an empty directory on a data volume. Run `sudo bash install.sh --uninstall` from the release directory to remove the installation.
+
 ## Board revision 2.1 findings and resolutions
 
 ### ADC_AVCC at TP16
