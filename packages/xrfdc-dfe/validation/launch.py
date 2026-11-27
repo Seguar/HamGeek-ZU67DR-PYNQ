@@ -30,6 +30,7 @@ def main():
     p.add_argument("--lock", type=Path)
     p.add_argument("--adc-avcc", type=float, required=True)
     p.add_argument("--bundle", type=Path, required=True)
+    p.add_argument("--wheel", type=Path, help="install this wheel into the private board stage")
     p.add_argument("--board-python", default="/usr/local/share/pynq-venv/bin/python")
     p.add_argument("--stage-root", default="/data", choices=["/dev/shm", "/data"])
     p.add_argument("--output", required=True, type=Path)
@@ -67,6 +68,8 @@ def main():
             if args.dry_run:
                 subprocess.run([sys.executable, *argv, "--fake"], cwd=stage)
             else:
+                if args.wheel:
+                    shutil.copy(args.wheel, stage / args.wheel.name)
                 ssh = ["ssh", "-o", "BatchMode=yes"]
                 if args.ssh_config:
                     ssh += ["-F", str(args.ssh_config)]
@@ -85,6 +88,12 @@ def main():
                     remote(prefix+"tar -xf -", stdin=archive)
                 if lock.read_text().strip() != ticket:
                     raise RuntimeError("coordinator lock changed")
+                env = []
+                if args.wheel:
+                    remote(prefix + shlex.join([args.board_python, "-B", "-m", "pip",
+                           "install", "--no-index", "--no-cache-dir", "--disable-pip-version-check",
+                           "--no-deps", "--no-compile", "--target", "site", "./"+args.wheel.name]))
+                    env = ["env", "PYTHONPATH="+remote_stage+"/site"]
                 safe = False
                 # Always fetch the report for an ordinary validation failure.
                 password = os.environ.get("BOARD_SUDO_PASSWORD")
@@ -94,7 +103,7 @@ def main():
                      'source /etc/profile.d/xrt_setup.sh; '
                      'export LD_LIBRARY_PATH="$XILINX_XRT/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"; '
                      'exec timeout -k 15 180 "$@"', "validation",
-                     args.board_python, "-B", *argv])],
+                     *env, args.board_python, "-B", *argv])],
                     input=(password+"\n").encode() if password else b"")
                 report = remote(prefix+"cat report.json", capture_output=True).stdout
                 (stage/"report.json").write_bytes(report)

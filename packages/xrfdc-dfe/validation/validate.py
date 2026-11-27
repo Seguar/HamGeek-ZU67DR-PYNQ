@@ -90,20 +90,28 @@ def tone(rt, report):
 
 
 def sync(rt, rf, report, adc, dac):
-    reference = rt.mts(adc if adc else -1, dac if dac else -1)
+    # Separate MTS calls remeasure FIFO delays. These complete tile-pair
+    # signatures were measured by the C helper over 12 r5 reloads per mode.
+    signatures = {
+        ("DAC", 432): [[432, 432, 16, 16]],
+        ("DAC", None): [[416, 416, 0, 0]],
+        ("ADC", 448): [[448, 448, 8, 4], [448, 448, 8, 8]],
+        ("ADC", None): [[440, 440, 0, 0], [444, 444, 4, 0]],
+    }
+    reference = rt.mts(adc or -1, dac or -1)
     for kind, target in (("DAC", dac), ("ADC", adc)):
         c = re.search(rf"^{kind} target={target or -1} latency=\[(\d+),(\d+)\] offset=\[(\d+),(\d+)\]", reference, re.M)
         if c is None:
             raise ValueError(f"unexpected C helper output: {reference}")
+        allowed = signatures[kind, target]
+        label = f"{kind} MTS {target or 'auto'}"
+        c_pair = list(map(int, c.groups()))
+        report.check(label+" C latencies and offsets", c_pair, allowed, c_pair in allowed)
         sync_fn = rf.mts_dac_sync if kind == "DAC" else rf.mts_adc_sync
         result = sync_fn([0, 1], target_latency=target)
-        label = f"{kind} MTS {target or 'auto'}"
-        for key, pair in (("Latency", c.groups()[:2]), ("Offset", c.groups()[2:])):
-            measured = [int(result["tiles"][tile][key]) for tile in (0, 1)]
-            report.check(f"{label} {key} vs C", measured, list(map(int, pair)))
-        allowed = [target] if target else ([416] if kind == "DAC" else [440, 444])
-        report.check(label, result["Latency"], allowed, result["Latency"] in allowed
-                     and all(int(x) == result["Latency"] for x in c.groups()[:2]))
+        pair = [int(result["tiles"][tile][key]) for key in ("Latency", "Offset") for tile in (0, 1)]
+        report.check(label+" Python latencies and offsets", pair, allowed, pair in allowed)
+        report.check(label+" summary latency", result["Latency"], pair[0])
 
 
 def exercise(rt, rf, params, r):
@@ -222,6 +230,11 @@ def main():
                 r.check("execution", repr(exc), "completed")
             except ValueError:
                 pass
+    if not args.fake:
+        try:
+            r.check("final competing processes", processes(), [])
+        except ValueError:
+            pass
     return r.finish()
 
 

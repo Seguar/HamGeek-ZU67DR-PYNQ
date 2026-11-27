@@ -57,6 +57,17 @@ class FailureChecks(unittest.TestCase):
         self.assertEqual(block.zone, 1)
         self.assertTrue(any(r["check"] == "changed ADC zone" and r["status"] == "FAIL" for r in rows))
 
+    def test_independent_adc_sync_signatures(self):
+        rt = fake.FakeRT(None)
+        rf = rt.overlay.rfdc
+        with tempfile.TemporaryDirectory() as tmp:
+            report = validate.Report(Path(tmp), True)
+            with patch.object(rf, "mts_adc_sync", return_value=rf._mts([0, 1], 444, [4, 0])):
+                validate.sync(rt, rf, report, None, None)
+            with patch.object(rf, "mts_adc_sync", return_value=rf._mts([0, 1], 444, [0, 0])):
+                with self.assertRaisesRegex(ValueError, "Python latencies and offsets"):
+                    validate.sync(rt, rf, report, None, None)
+
     def test_process_scan(self):
         # Read-only scan on the development machine.
         self.assertNotIn(str(validate.os.getpid()), validate.processes())
