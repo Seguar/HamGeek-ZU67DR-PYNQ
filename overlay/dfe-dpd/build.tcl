@@ -75,8 +75,8 @@ if {[get_property PROGRESS [get_runs impl_1]] ne "100%"} {error "Implementation 
 open_run impl_1
 file mkdir run
 set fd [open run/nlf-sites.txt w]
-puts $fd [get_sites -filter {SITE_TYPE == DFE_E}]
-foreach c [get_cells -hier -filter {REF_NAME == DFE_NL_FIR}] {puts $fd "$c [get_property LOC $c]"}
+puts $fd [get_bels -of_objects [get_sites -filter {SITE_TYPE =~ DFE_*}] -filter {TYPE == DFE_NL_FIR}]
+foreach c [get_cells -hier -filter {REF_NAME == DFE_NL_FIR}] {puts $fd "$c [get_bels -of_objects $c]"}
 close $fd
 report_timing_summary -report_unconstrained -max_paths 3 -file run/timing.rpt
 report_utilization -file run/utilization.rpt

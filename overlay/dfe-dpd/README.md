@@ -11,3 +11,16 @@ The digital PA applies a sampled Saleh-type AM/AM and AM/PM curve plus a delayed
 Use the same vendor PS preset as the resampler/NLF overlay. From a fresh output directory run `vivado -mode batch -source build.tcl -tclargs /path/to/vendor-ps.tcl /path/to/output` with Vivado 2025.2. Deploy the matching dfe_dpd.bit and dfe_dpd.hwh together. Use PYNQ with the repository's pynq_dfe package on PYTHONPATH. Set DFE_REPO to the repository root, DFE_BITFILE to the bitstream, and DFE_OUTPUT to a writable data directory. Run notebooks/dfe-dpd.ipynb. Captures, measurements, quantized learned tables, and plots are written to DFE_OUTPUT.
 
 See [PG401](https://docs.amd.com/r/en-US/pg401-xdfe-nlf) for the one-phase delay registers, complex LUT packing and direct-port bank-switch timing.
+
+## Measured on XCZU67DR
+
+The 10.33 dB PAPR held-out period matched both static banks and both edges of a live bank switch exactly across all 1024 complex samples (zero maximum component-code error). The actuator delay was 17 clocks and the complete cascade delay was 36 clocks. The PA transfer also matched its quantized model exactly on the held-out period at every iteration. Frame count, range, and overflow checks passed. The first three periods trained the inverse.
+
+| Update | Worst-side ACPR (dBc) | Waveform NMSE (dB) | RMS EVM (%) |
+|---|---:|---:|---:|
+| Identity | −33.13 | −21.60 | 8.314 |
+| 1 | −41.77 | −35.46 | 1.686 |
+| 2 | −47.49 | −41.33 | 0.858 |
+| 3 | −55.50 | −48.31 | 0.384 |
+
+Implementation used two of the device's 16 DFE_NL_FIR primitive locations. Routed setup slack was +5.510 ns and hold slack was +0.011 ns, with zero failing endpoints and zero critical CDC endpoints. The experiment covers this waveform and digital PA curve.

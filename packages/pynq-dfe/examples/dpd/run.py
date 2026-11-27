@@ -44,7 +44,8 @@ def capture(ol, mode, x):
         status = ol.control.read(8)
         if status != N << 3 or ol.nlf.read(16) or ol.pa.read(16):
             raise RuntimeError(f"frame/overflow {status:#x}/{ol.nlf.read(16)}/{ol.pa.read(16)}")
-        return signed25(rx) + 1j * signed25(rx >> 25)
+        words = np.array(rx)
+    return signed25(words) + 1j * signed25(words >> 25)
 
 
 def teardown(ol):
