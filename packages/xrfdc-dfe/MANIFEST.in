@@ -1,0 +1,3 @@
+include build_runtime.sh
+include tools/cdef.py tools/mmio.c tools/mmio.h
+exclude xrfdc/libxrfdc.so
