@@ -2,17 +2,17 @@
  * SPDX-License-Identifier: MIT
  * Generated from embeddedsw v2025.2, Linux ABI. Load with pack=1.
  */
-typedef uint32_t u32;
-typedef uint16_t u16;
-typedef uint8_t u8;
-typedef int32_t s32;
-typedef int16_t s16;
-typedef unsigned long long u64;
-typedef long long s64;
-typedef int8_t s8;
-typedef unsigned long metal_phys_addr_t;
 struct metal_io_region;
 struct metal_device;
+typedef unsigned int u32;
+typedef unsigned short u16;
+typedef unsigned char u8;
+typedef signed int s32;
+typedef signed short s16;
+typedef unsigned long long u64;
+typedef signed long long s64;
+typedef signed char s8;
+typedef unsigned long metal_phys_addr_t;
 typedef void (*XRFdc_StatusHandler)(void *CallBackRef, u32 Type, u32 Tile_Id, u32 Block_Id, u32 StatusEvent);
 typedef struct {
  u32 Enabled;

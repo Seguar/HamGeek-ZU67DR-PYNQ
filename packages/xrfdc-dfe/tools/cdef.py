@@ -27,18 +27,15 @@ def declarations(cc, rf):
  * SPDX-License-Identifier: MIT
  * Generated from embeddedsw v2025.2, Linux ABI. Load with pack=1.
  */
-typedef uint32_t u32;
-typedef uint16_t u16;
-typedef uint8_t u8;
-typedef int32_t s32;
-typedef int16_t s16;
-typedef unsigned long long u64;
-typedef long long s64;
-typedef int8_t s8;
-typedef unsigned long metal_phys_addr_t;
 struct metal_io_region;
 struct metal_device;
 """
+    # cffi keeps uint32_t distinct from unsigned int in ABI mode. Resolve
+    # Linux's __uN/__sN aliases to the actual native primitive spellings.
+    for linux_type, alias in re.findall(r"^typedef (__[us]\d+) ([us]\d+);$", source, re.M):
+        native = re.search(r"\btypedef ([\w ]+) " + linux_type + ";", source)[1]
+        preamble += f"typedef {native.replace('__signed__', 'signed')} {alias};\n"
+    preamble += re.search(r"^typedef [\w ]+ metal_phys_addr_t;$", source, re.M)[0] + "\n"
     # Export integer literal constants from both xrfdc.h and xrfdc_hw.h.
     macros = subprocess.check_output([*cc, "-dM", "-E", rf / "xrfdc.h"], text=True)
     constants = re.findall(

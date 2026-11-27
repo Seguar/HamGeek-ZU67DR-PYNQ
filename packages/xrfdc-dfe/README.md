@@ -7,8 +7,8 @@ the local PYNQ MMIO array and retains it for the instance lifetime.
 
 ## Board installation
 
-The image package manifest lists Ubuntu 24.04 arm64, Python 3.12.3 and
-`libsysfs2`. The wheel contains a native Linux aarch64 library, a private copy
+The PYNQ 4.0.0 image venv uses Python 3.12.3 and includes cffi 2.1.0 and
+wurlitzer 3.1.1. The Ubuntu 24.04 arm64 package manifest includes `libsysfs2`. The wheel contains a native Linux aarch64 library, a private copy
 of libmetal and ABI-mode cffi declarations. Stage the wheel and dependency
 wheels on `/data` or `/dev/shm`. With the wheelhouse in `/data/wheels`, use
 the existing PYNQ venv and keep the install itself on the data partition:
@@ -69,7 +69,9 @@ compares declarations with the checked-in cdef and validates size, alignment,
 field size and offset against native C. After a deliberate header change,
 use `tools/cdef.py --generate RFDC_SRC METAL_INCLUDE SYSROOT_INCLUDE` and
 review the generated diff. The offline driver tests map ordinary RAM and use
-the real shared library.
+the real shared library. With the wheel installed and the image's PYNQ packages
+available, run `python tests/pynq_image_smoke.py "$ROWTIMING_HWH"` to exercise
+PYNQ's HWH parser, driver registration and MMIO class with a RAM-backed device.
 
 ## API additions
 

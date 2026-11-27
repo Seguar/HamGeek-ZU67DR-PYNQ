@@ -89,6 +89,11 @@ def test_rowtiming_native(driver, description):
                           (lib.XRFDC_DAC_PATHS_ENABLED_OFFSET, 1),
                           (lib.XRFDC_ADC_PATHS_ENABLED_OFFSET, 1)):
         ctypes.c_uint32.from_buffer(ip.buffer, offset).value = value
+    if hasattr(ip, "get_mts_enable"):
+        assert ip.get_mts_enable(0, 0) is False
+        for name in ("mts_adc_sync", "mts_dac_sync", "mts_sysref_config",
+                     "mts_sysref_enable", "mts_sysref_disable"):
+            assert callable(getattr(ip, name))
     block.SetDACDataScaler(1)
     assert block.GetDACDataScaler() == 1
     block.DACDataScaler = 0
@@ -115,3 +120,29 @@ def test_short_window(driver, description):
     description["addr_range"] = 4096
     with pytest.raises(RuntimeError, match="MMIO window"):
         driver.RFdc(description)
+
+
+def test_clock_domain_translation(driver, description):
+    ip = driver.RFdc(description)
+    # The board has separate ADC and DAC clock domains.
+    for kind, count in (("ADC", 3), ("DAC", 2)):
+        for index in range(count):
+            getattr(ip._config, kind + "Tile_Config")[index].Enable = 1
+    def clock(source, reference, sample):
+        return dict(SourceTile=source, DistributedClock=2,
+                    PLLSettings=dict(RefClkFreq=reference, SampleRate=sample))
+    adc = [clock(5, 2500, 2500), clock(5, 2500, 2500), clock(5, 250, 5000)]
+    dac = [clock(4, 250, 10000), clock(4, 250, 10000)]
+    calls = []
+    ip._call_function = lambda name, config: calls.append((name, config))
+    ip.ClkDistribution = {"ADC": adc, "DAC": dac}
+    assert [name for name, _ in calls] == ["SetClkDistribution"] * 2
+    d, a = (cfg for _, cfg in calls)
+    assert (a.SourceType, a.SourceTileId, list(a.EdgeTileIds), a.DistRefClkFreq) == (0, 2, [2, 0], 250)
+    assert list(a.SampleRates[0]) == [2500, 2500, 5000, 0]
+    assert (d.SourceType, d.SourceTileId, list(d.EdgeTileIds)) == (1, 0, [1, 0])
+    calls.clear()
+    adc[1]["SourceTile"] = 4
+    with pytest.raises(ValueError, match="contiguous"):
+        ip.ClkDistribution = {"ADC": adc, "DAC": dac}
+    assert calls == []
