@@ -7,14 +7,14 @@ the local PYNQ MMIO array and retains it for the instance lifetime.
 
 ## Board installation
 
-Install the [DFE v0.1.0 release](https://github.com/Seguar/HamGeek-ZU67DR-PYNQ/releases/tag/dfe-v0.1.0) on the stable image `v4.0.0-zu67dr.1`. Download all release assets into one directory on the mounted data partition or in `/dev/shm`. From that directory run:
+Install the [DFE v0.1.1 release](https://github.com/Seguar/HamGeek-ZU67DR-PYNQ/releases/tag/dfe-v0.1.1) on the stable image `v4.0.0-zu67dr.1`. Download all release assets into one directory on the mounted data partition or in `/dev/shm`. From that directory run:
 
 ```sh
 sha256sum -c SHA256SUMS
 sudo bash install.sh
 ```
 
-The installer registers both wheels in the board's PYNQ venv, with the package files and five native libraries on `/data`. Restart existing Jupyter kernels after installation. Overlays default to `/data/overlays/dfe`. Use `--overlay-dir /absolute/path` to choose an empty directory on a data volume. Run `sudo bash install.sh --uninstall` from the release directory to remove the installation.
+The installer requires 60 MB free on eMMC and installs both wheels and five native libraries in the PYNQ venv. Restart existing Jupyter kernels after installation. Overlays default to `/data/overlays/dfe`. Without a mounted microSD, the software installs and overlays are skipped. Use `--overlay-dir /absolute/path` for an empty directory on another mounted data volume. An upgrade removes the v0.1.0 path registration and deletes its old payload when the card is mounted. Rerun with the card mounted to finish any deferred cleanup. Run `sudo bash install.sh --uninstall` from the release directory to remove either layout.
 
 ## Native build and offline checks
 
