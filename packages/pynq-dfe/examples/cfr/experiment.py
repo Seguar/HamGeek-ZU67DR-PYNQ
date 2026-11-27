@@ -94,17 +94,17 @@ def compare(x, y, low_error, frozen):
     return dict(before=before, after=after, rows=rows)
 
 
-def acquire(bitfile, folder):
+def acquire(bitfile, folder, *, window=False):
     from pynq import Overlay
     from pynq_dfe.cfr import HardCFR
     from dma_frame import transfer
     out = Path(folder)
     out.mkdir(exist_ok=True)
     x = stimulus()
-    frozen = json.loads((out/'expectations.json').read_text())
+    frozen = json.loads((Path(__file__).with_name('expectations.json')).read_text())
     ol = Overlay(str(bitfile))
     cfr = HardCFR(ol.cfr.mmio)
-    cfr.configure([(i, 0) for i in pulse()], THRESHOLD)
+    cfr.configure([(i, 0) for i in pulse()], THRESHOLD, window=window)
     low = iqround(x[0] / 8)
     # Use a phase-modulated constant envelope for an unambiguous correlation.
     low = iqround(2048 * np.exp(1j * np.angle(low)))
@@ -117,7 +117,7 @@ def acquire(bitfile, folder):
     np.savez_compressed(out/'captures.npz', source=x, raw=raw, raw_low=raw_low,
                         low=low, aligned=y, latency_mod_period=lag)
     result = compare(x, y, low_error, frozen)
-    result.update(latency_mod_period=lag, threshold_counts=THRESHOLD,
+    result.update(window_enabled=window, latency_mod_period=lag, threshold_counts=THRESHOLD,
                   low_input_papr_dB=float(db(max(abs(low)**2)/np.mean(abs(low)**2))))
     (out/'measurements.json').write_text(json.dumps(result, indent=2)+'\n')
     return result
