@@ -92,8 +92,10 @@ def configure(dev):
 def load(dev, name):
     taps = taps_for(name)
     bank = 2 if (dev.call("ReadReg", 0x20) >> 4) & 3 == 0 else 0
+    # The driver programs matrix rows [a,b] and [-b,a]. For I+jQ,
+    # request [a,-b] to realize multiplication by the intended a+jb.
     coeff = dev.new("Coefficients", dict(Num=4, Set=bank,
-                    Coefficients=np.r_[taps.real,taps.imag].astype(int).tolist()))
+                    Coefficients=np.r_[taps.real,-taps.imag].astype(int).tolist()))
     dev.call("LoadCoefficients", 1, 1, SHIFT, coeff)
     dev.call("Update", dev.new("EqConfig", dict(DatapathMode=1, RealDatapathSet=bank)))
     wait_for(lambda: dev.call("ReadReg", 0x20) & 0xf4 ==
