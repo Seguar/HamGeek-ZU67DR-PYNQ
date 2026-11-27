@@ -55,6 +55,7 @@ def setup(dev):
     dev._checked("AddRCtoRCCfg", rc, 0, 0, 0, ddc, nco, schedule, cc)
     if rc.NcoCfg[0].Frequency != -(1 << 30):
         raise RuntimeError(f"Unexpected NCO word {rc.NcoCfg[0].Frequency}")
+    dev.call("ClearEventStatus", dev.new("StatusMask", {"RachUpdate": 1}))
     dev._checked("SetNextCfg", cc, rc)
     wait(lambda: events(dev)["RachUpdate"], "RACH update")
     wait(lambda: events(dev)["FrameInitTrigger"][0], "band 0 frame trigger")
@@ -112,5 +113,8 @@ def run(bitfile, destination):
             control.write(0, 0)
             if dev.call("GetStateID") == dev.lib.XDFEPRACH_STATE_OPERATIONAL:
                 dev.deactivate()
+                wait(lambda: not (dev.call("ReadReg", 0x10) & 1), "deactivation")
             dma.sendchannel.stop()
             dma.recvchannel.stop()
+            if control.read(0) or control.read(8):
+                raise RuntimeError("Capture harness did not return to idle")
