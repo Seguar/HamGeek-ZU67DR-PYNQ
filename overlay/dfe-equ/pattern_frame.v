@@ -1,0 +1,59 @@
+// SPDX-License-Identifier: BSD-3-Clause
+// One fixed frame (2048 IQ words). Buffer both sides of the unthrottled FIR.
+module pattern_frame(
+    input clk, input resetn,
+    input [31:0] tx_data, input tx_valid, input tx_last, output tx_ready,
+    output [31:0] eq_in, input eq_ready, output trigger,
+    input [31:0] eq_out, input eq_valid,
+    output [31:0] rx_data, output rx_valid, output rx_last, input rx_ready
+);
+    localparam LOAD=0, PRIME=1, PLAY=2, DRAIN=3;
+    reg [1:0] state;
+    reg [10:0] pos;
+    reg [3:0] tick;
+    reg [31:0] stimulus [0:2047];
+    reg [31:0] capture [0:2047];
+    reg [31:0] sample, result;
+    wire taking = (state == PLAY && eq_ready);
+    wire sending = (state == DRAIN && rx_ready);
+    assign tx_ready = state == LOAD;
+    assign eq_in = state == PLAY ? sample : 0;
+    assign trigger = tick == 0;
+    assign rx_valid = state == DRAIN;
+    assign rx_data = result;
+    assign rx_last = &pos;
+
+    always @(posedge clk) begin
+        if (tx_valid && tx_ready)
+            stimulus[pos] <= tx_data;
+        sample <= stimulus[state == PLAY ? pos + {10'b0,taking} : 11'd0];
+        if (taking)
+            capture[pos] <= eq_valid ? eq_out : 32'h80008000;
+        result <= capture[state == DRAIN ? pos + {10'b0,sending} : 11'd0];
+        if (!resetn) begin
+            state <= LOAD;
+            pos <= 0;
+            tick <= 0;
+        end else begin
+            tick <= tick + 1'b1;
+            case (state)
+                LOAD: if (tx_valid) begin
+                    pos <= pos + 1'b1;
+                    if (tx_last) begin
+                        pos <= 0;
+                        if (&pos) state <= PRIME;
+                    end
+                end
+                PRIME: state <= PLAY;
+                PLAY: if (taking) begin
+                    pos <= pos + 1'b1;
+                    if (&pos) state <= DRAIN;
+                end
+                DRAIN: if (sending) begin
+                    pos <= pos + 1'b1;
+                    if (&pos) state <= LOAD;
+                end
+            endcase
+        end
+    end
+endmodule
