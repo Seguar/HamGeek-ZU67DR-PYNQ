@@ -1,0 +1,128 @@
+{
+  "overlay": "dfe_mixer_ccf",
+  "ip": {
+    "rfdc": {
+      "vlnv": "xilinx.com:ip:usp_rf_data_converter:2.6",
+      "base": 2181038080,
+      "range": 262144
+    },
+    "control": {
+      "vlnv": "xilinx.com:ip:axi_gpio:2.0",
+      "base": 2214592512,
+      "range": 65536
+    },
+    "dma": {
+      "vlnv": "xilinx.com:ip:axi_dma:7.1",
+      "base": 2214658048,
+      "range": 65536
+    },
+    "mixer": {
+      "vlnv": "xilinx.com:ip:xdfe_cc_mixer:2.0",
+      "base": 2214854656,
+      "range": 262144,
+      "parameters": {
+        "C_ANTENNA_INTERLEAVE": "1",
+        "C_AUXILIARY_PORT": "1",
+        "C_BYPASS_DDC": "0",
+        "C_BYPASS_MIXER": "0",
+        "C_CLOCK_FREQUENCY": "312.50",
+        "C_DATA_IWIDTH": "16",
+        "C_DATA_OWIDTH": "16",
+        "C_ENABLE_MIX_IF": "0",
+        "C_LANES": "1",
+        "C_MAX_USEABLE_CCIDS": "4",
+        "C_MIXER_CPS": "1",
+        "C_MODE": "uplink",
+        "C_NUM_ANTENNA": "1",
+        "C_NUM_AUXILIARY": "0",
+        "C_PE_ACTIVE_DUTYCYCLE": "100.0",
+        "C_PE_NUM_NCO": "1",
+        "C_PE_N_CH_X1": "1",
+        "C_PE_N_CH_X2": "0",
+        "C_PE_N_CH_X4": "0",
+        "C_PE_N_CH_X8": "0",
+        "C_PE_N_CH_X16": "0",
+        "C_TUSER_WIDTH": "8",
+        "C_VERSION_REGISTER": "33556224",
+        "ANTENNA_INTERLEAVE": "1",
+        "CLOCK_FREQUENCY": "312.50",
+        "MAX_USEABLE_CCIDS": "4",
+        "MIXER_CPS": "1",
+        "MODE": "Uplink",
+        "NUM_ANTENNA": "1",
+        "NUM_AUXILIARY": "0",
+        "NUM_NCO": "1",
+        "N_CH_X1": "1",
+        "N_CH_X2": "0",
+        "N_CH_X4": "0",
+        "N_CH_X8": "0",
+        "N_CH_X16": "0",
+        "SAMPLE_WIDTH_IN": "16",
+        "SAMPLE_WIDTH_OUT": "16",
+        "TUSER_WIDTH": "8"
+      }
+    },
+    "ccf": {
+      "vlnv": "xilinx.com:ip:xdfe_cc_filter:1.1",
+      "base": 2215116800,
+      "range": 262144,
+      "parameters": {
+        "C_ANTENNA_INTERLEAVE": "1",
+        "C_CLOCK_FREQUENCY": "312.50",
+        "C_DATA_IWIDTH": "16",
+        "C_DATA_OWIDTH": "16",
+        "C_LANES": "1",
+        "C_NUM_ANTENNA": "1",
+        "C_NUM_CC_PER_ANTENNA": "2",
+        "C_PE_ACTIVE_DUTYCYCLE": "100",
+        "C_PE_NUM_TAPS": "16",
+        "C_SWITCHABLE": "false",
+        "C_TUSER_WIDTH": "8",
+        "C_VERSION_REGISTER": "16844544",
+        "ANTENNA_INTERLEAVE": "1",
+        "CLOCK_FREQUENCY": "312.50",
+        "MAX_USEABLE_CCIDS": "2",
+        "NUM_ANTENNA": "1",
+        "NUM_TAPS": "16",
+        "SAMPLE_WIDTH_IN": "16",
+        "SAMPLE_WIDTH_OUT": "16",
+        "SWITCHABLE": "false",
+        "TUSER_WIDTH": "8"
+      }
+    }
+  },
+  "control": {
+    "register_offset": 0,
+    "tone_enable_bit": 0,
+    "capture_toggle_bit": 1,
+    "raw_select_bit": 2,
+    "frame_words": 1024,
+    "word_bytes": 4,
+    "tone_hz": 78125000,
+    "sample_rate_hz": 312500000,
+    "tone_select_lsb": 3,
+    "tone_modes_MHz": [
+      [
+        78.125
+      ],
+      [
+        39.0625
+      ],
+      [
+        117.1875
+      ],
+      [
+        39.0625,
+        117.1875
+      ]
+    ],
+    "status_offset": 8,
+    "status_busy_bit": 0,
+    "status_fault_bit": 1
+  },
+  "mixer_trigger": {
+    "input": "s_axis_ul_din_tuser[0]",
+    "period_adc_clocks": 16,
+    "edge": "rising"
+  }
+}
